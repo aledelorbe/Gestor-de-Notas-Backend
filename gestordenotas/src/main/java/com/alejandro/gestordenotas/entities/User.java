@@ -1,9 +1,9 @@
-package com.alejandro.carritodecompras.entities;
+package com.alejandro.gestordenotas.entities;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+// import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
