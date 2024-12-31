@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -27,6 +29,7 @@ public class Note {
     @NotBlank // To obligate to this attribute not to empty or blank values.
     private String content;
 
+    // These attributes can have empty values because they are set in cycle life events of entity objects
     private LocalDate createdAt;
 
     private LocalDate updatedAt;
@@ -64,6 +67,18 @@ public class Note {
 
     public void setUpdatedAt(LocalDate updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    // To set the date when the record is saved in the db 
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDate.now();
+    }
+
+    // To set the date when the record is updated in the db 
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDate.now();
     }
 
 }
