@@ -17,12 +17,23 @@ public class UserAspect {
 
     // To create advice that intercepts the save method of the user service file
     @Before("execution(public com.alejandro.gestordenotas.entities.User com.alejandro.gestordenotas.services.UserService.save(com.alejandro.gestordenotas.entities.User))")
-    public void trimBefore(JoinPoint joinPoint) {
+    public void trimBeforeSave(JoinPoint joinPoint) {
 
         logger.info("Aspecto ejecutado antes del método save() ------------------------");
 
         Object[] args = joinPoint.getArgs(); // Obtiene el argumento del método interceptado
         User userBefore = (User) args[0]; // Cast del argumento al tipo User
+
+        userBefore.setName(userBefore.getName().trim());
+    }
+
+    @Before("execution(* com.alejandro.gestordenotas.services.UserService.update(..))")
+    public void trimBeforeUpdate(JoinPoint joinPoint) {
+
+        logger.info("Aspecto ejecutado antes del método update() ------------------------");
+
+        Object[] args = joinPoint.getArgs(); // Obtiene el argumento del método interceptado
+        User userBefore = (User) args[1]; // Cast del argumento al tipo User
 
         userBefore.setName(userBefore.getName().trim());
     }
