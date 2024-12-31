@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -131,7 +132,7 @@ public class UserController {
 
     // To create an endpoint that allows updating information of a certain note of a
     // certain user
-    @PutMapping("/{userId}/notes/{noteId}")
+    @PatchMapping("/{userId}/notes/{noteId}")
     public ResponseEntity<?> editNoteByUserId(@Valid @RequestBody Note editNote, BindingResult result,
             @PathVariable Long userId, @PathVariable Long noteId) {
         // To handle of obligations of object attributes
