@@ -1,7 +1,9 @@
 package com.alejandro.gestordenotas.entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 // import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -12,8 +14,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 
@@ -37,13 +42,23 @@ public class User {
     @NotBlank // To obligate to this attribute not to empty or blank values.
     private String password;
 
+    // This attribute is not mapped to any fields in the table.
+    @Transient
+    private boolean admin;
+
     // To set a relationship one to many
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_user")
     private List<Note> notes;
 
+    // To set a relationship many to many
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_role"))
+    private Set<Role> roles; 
+
     public User() {
         this.notes = new ArrayList<>();
+        this.roles = new HashSet<>();
     }
 
     public Long getId() {
@@ -78,4 +93,13 @@ public class User {
     public void setNotes(List<Note> notes) {
         this.notes = notes;
     }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
 }
