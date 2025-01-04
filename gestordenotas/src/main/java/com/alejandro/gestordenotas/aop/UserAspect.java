@@ -24,7 +24,7 @@ public class UserAspect {
         Object[] args = joinPoint.getArgs(); // Obtiene el argumento del método interceptado
         User userBefore = (User) args[0]; // Cast del argumento al tipo User
 
-        userBefore.setName(userBefore.getName().trim());
+        userBefore.setUsername(userBefore.getUsername().trim());
     }
 
     @Before("execution(* com.alejandro.gestordenotas.services.UserService.update(..))")
@@ -35,6 +35,6 @@ public class UserAspect {
         Object[] args = joinPoint.getArgs(); // Obtiene el argumento del método interceptado
         User userBefore = (User) args[1]; // Cast del argumento al tipo User
 
-        userBefore.setName(userBefore.getName().trim());
+        userBefore.setUsername(userBefore.getUsername().trim());
     }
 }

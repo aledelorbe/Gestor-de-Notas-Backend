@@ -58,7 +58,7 @@ public class UserServiceImp implements UserService {
             // update that record and return an optional value
             User userDb = optionalUser.get();
 
-            userDb.setName(user.getName());
+            userDb.setUsername(user.getUsername());
             userDb.setPassword(user.getPassword());
 
             return Optional.ofNullable(repository.save(userDb));

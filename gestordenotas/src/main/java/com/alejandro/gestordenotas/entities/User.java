@@ -21,7 +21,7 @@ import jakarta.validation.constraints.NotBlank;
 // In mysql the name of this table is 'user' but in this project 
 // the name of this class is 'User'
 @Entity
-@Table(name = "user", uniqueConstraints = @UniqueConstraint(name = "UK_user", columnNames = { "name" }))
+@Table(name = "user", uniqueConstraints = @UniqueConstraint(name = "UK_user", columnNames = { "username" }))
 public class User {
 
     // Mapping of class attributes with table fields in mysql
@@ -32,7 +32,7 @@ public class User {
     private Long id;
 
     @NotBlank // To obligate to this attribute not to empty or blank values.
-    private String name;
+    private String username;
 
     @NotBlank // To obligate to this attribute not to empty or blank values.
     private String password;
@@ -54,12 +54,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
