@@ -61,15 +61,31 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    // To create an endpoint that allows invoking the method save.
+    // To create an endpoint that allows invoking the method save user (the user will become an admin)
     // The annotation called 'RequestBody' allows receiving data of a user
     @PostMapping()
-    public ResponseEntity<?> saveUser(@Valid @RequestBody User user, BindingResult result) {
+    public ResponseEntity<?> saveNewUserAdmin(@Valid @RequestBody User user, BindingResult result) {
         // To handle the obligations of object attributes
         if (result.hasFieldErrors()) {
             return validation(result);
         }
 
+        user.setAdmin(true);
+        // When a new user is created to respond return the same user
+        User newUser = service.save(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    }
+
+    // To create an endpoint that allows invoking the method save user, but the user will not become an admin
+    // The annotation called 'RequestBody' allows receiving data of a user
+    @PostMapping("/register")
+    public ResponseEntity<?> saveNewUser(@Valid @RequestBody User user, BindingResult result) {
+        // To handle the obligations of object attributes
+        if (result.hasFieldErrors()) {
+            return validation(result);
+        }
+
+        user.setAdmin(false);
         // When a new user is created to respond return the same user
         User newUser = service.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
