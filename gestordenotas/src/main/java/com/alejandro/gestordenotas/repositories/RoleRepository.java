@@ -12,7 +12,7 @@ public interface RoleRepository extends CrudRepository<Role, Long> {
     // Custom queries ------
     // ---------------------
 
-    // To get a specific user based on its 'username'
-    Optional<Role> findByUsername(String username);
+    // To get a specific role based on its role name
+    Optional<Role> findByName(String name);
 
 }
