@@ -98,7 +98,7 @@ public class UserServiceImp implements UserService {
             User userDb = optionalUser.get();
 
             userDb.setUsername(user.getUsername());
-            userDb.setPassword(user.getPassword());
+            userDb.setPassword(passwordEncoder.encode(user.getPassword()));
 
             return Optional.ofNullable(repository.save(userDb));
         }

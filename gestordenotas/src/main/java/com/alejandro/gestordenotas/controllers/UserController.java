@@ -1,5 +1,6 @@
 package com.alejandro.gestordenotas.controllers;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,8 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    // To create an endpoint that allows invoking the method save user (the user will become an admin)
+    // To create an endpoint that allows invoking the method save user (the user
+    // will become an admin)
     // The annotation called 'RequestBody' allows receiving data of a user
     @PostMapping()
     public ResponseEntity<?> saveNewUserAdmin(@Valid @RequestBody User user, BindingResult result) {
@@ -76,7 +78,8 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    // To create an endpoint that allows invoking the method save user, but the user will not become an admin
+    // To create an endpoint that allows invoking the method save user, but the user
+    // will not become an admin
     // The annotation called 'RequestBody' allows receiving data of a user
     @PostMapping("/register")
     public ResponseEntity<?> saveNewUser(@Valid @RequestBody User user, BindingResult result) {
@@ -94,10 +97,29 @@ public class UserController {
     // To create an endpoint that allows updating all of the values
     // of a specific user based its id.
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
+    public ResponseEntity<?> updateUser(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id,
+            Principal principal) {
         // To handle of obligations of object attributes
         if (result.hasFieldErrors()) {
             return validation(result);
+        }
+
+        // Get the username of the authenticated user
+        String authenticatedUsername = principal.getName();
+
+        // Check if the authenticated user is the owner of the resource
+        Optional<User> optionalUser1 = service.findById(id);
+
+        if ( optionalUser1.isPresent() ) {
+            User userDb = optionalUser1.get();
+
+            if (!userDb.getUsername().equals(authenticatedUsername)) {
+                Map<String, String> errors = new HashMap<>();
+
+                errors.put("message: ", "No puedes modificar información de otro usuario.");
+
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errors);
+            }
         }
 
         // Find specific user and if it's present then return specific user
