@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.alejandro.gestordenotas.entities.User;
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -33,6 +34,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
+
+        // To specific the path of endpoint 'login'
+        setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/users/login", "POST"));
     }
 
     @Override

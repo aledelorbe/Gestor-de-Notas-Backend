@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.alejandro.gestordenotas.security.filter.JwtAuthenticationFilter;
+import com.alejandro.gestordenotas.security.filter.JwtValidationFilter;
 
 @Configuration
 public class SpringSecurityConfig {
@@ -40,6 +41,7 @@ public class SpringSecurityConfig {
                 .requestMatchers("/api/users").permitAll()
                 .anyRequest().authenticated())
                 .addFilter(new JwtAuthenticationFilter(authenticationManager())) // login
+                .addFilter(new JwtValidationFilter(authenticationManager())) // to validate the token
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
