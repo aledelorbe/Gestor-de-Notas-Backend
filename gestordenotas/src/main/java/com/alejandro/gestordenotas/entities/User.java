@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
@@ -45,6 +46,9 @@ public class User {
     // This attribute is not mapped to any fields in the table.
     @Transient
     private boolean admin;
+
+    // This attribute can be empty because it is set in cycle life events of entity objects
+    private boolean enabled;
 
     // To set a relationship one to many
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -108,6 +112,20 @@ public class User {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    // To set the date when the record is saved in the db 
+    @PrePersist
+    public void prePersist() {
+        this.enabled = true;
     }
 
 }
