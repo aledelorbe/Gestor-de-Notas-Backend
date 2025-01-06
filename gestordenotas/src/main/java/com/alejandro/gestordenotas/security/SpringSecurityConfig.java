@@ -37,8 +37,18 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests((authz) -> authz
+                // Endpoints for user role
+                .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasRole("ADMIN")
+                // .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN")
+                // Endpoints for admin role
+                .requestMatchers(HttpMethod.PUT, "/api/users/{id}").hasRole("USER") 
+                .requestMatchers(HttpMethod.POST, "/api/users/{userId}/notes").hasRole("USER") // Notes
+                .requestMatchers(HttpMethod.PATCH, "/api/users/{userId}/notes/{noteId}").hasRole("USER")
+                .requestMatchers(HttpMethod.DELETE, "/api/users/{userId}/notes/{noteId}").hasRole("USER")
+                .requestMatchers(HttpMethod.GET, "/api/users/{id_user}/notes").hasRole("USER")
+                // Endpoint public
                 .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
-                .requestMatchers("/api/users").permitAll()
                 .anyRequest().authenticated())
                 .addFilter(new JwtAuthenticationFilter(authenticationManager())) // login
                 .addFilter(new JwtValidationFilter(authenticationManager())) // to validate the token
