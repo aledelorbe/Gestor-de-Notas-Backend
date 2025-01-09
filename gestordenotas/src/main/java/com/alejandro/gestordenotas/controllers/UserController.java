@@ -52,7 +52,7 @@ public class UserController {
     // To create an endpoint that allows invoking the method findById.
     @GetMapping("/{id}")
     public ResponseEntity<?> user(@PathVariable Long id) {
-        // Search a specific user and if it's present then return it.
+        // Search for a specific user and if it's present then return it.
         Optional<User> optionalUser = service.findById(id);
 
         if (optionalUser.isPresent()) {
@@ -104,25 +104,14 @@ public class UserController {
             return validation(result);
         }
 
-        // Get the username of the authenticated user
-        String authenticatedUsername = principal.getName();
+        // Check if the user that wants to access the resource is the owner
+        if (!isOwner(id, principal)) {
 
-        // Check if the authenticated user is the owner of the resource
-        Optional<User> optionalUser1 = service.findById(id);
-
-        if ( optionalUser1.isPresent() ) {
-            User userDb = optionalUser1.get();
-
-            if (!userDb.getUsername().equals(authenticatedUsername)) {
-                Map<String, String> errors = new HashMap<>();
-
-                errors.put("message: ", "No puedes modificar información de otro usuario.");
-
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errors);
-            }
+            // return code response 404
+            return ResponseEntity.notFound().build();
         }
 
-        // Find specific user and if it's present then return specific user
+        // Search for a specific user and if it's present then return specific user
         Optional<User> optionalUser = service.update(id, user);
 
         if (optionalUser.isPresent()) {
@@ -135,7 +124,7 @@ public class UserController {
     // To create an endpoint that allows deleting a specific user based its id.
     // @PatchMapping("/{id}")
     // public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-    // // Find specific user and if it's present then return specific user
+    // // Search for a specific user and if it's present then return specific user
     // Optional<User> optionalUser = service.deleteById(id);
     // if (optionalUser.isPresent()) {
     // return ResponseEntity.ok(optionalUser.orElseThrow());
@@ -151,10 +140,16 @@ public class UserController {
     // To create an endpoint that allows saving a new note of an certain user
     @PostMapping("/{userId}/notes")
     public ResponseEntity<?> saveNewNoteByUserId(@Valid @RequestBody Note newNote, BindingResult result,
-            @PathVariable Long userId) {
+            @PathVariable Long userId, Principal principal) {
         // To handle of obligations of object attributes
         if (result.hasFieldErrors()) {
             return validation(result);
+        }
+
+        // Check if the user that wants to access the resource is the owner
+        if (!isOwner(userId, principal)) {
+            // return code response 404
+            return ResponseEntity.notFound().build();
         }
 
         // Search for a specific user if it exists then save the note
@@ -172,10 +167,17 @@ public class UserController {
     // certain user
     @PatchMapping("/{userId}/notes/{noteId}")
     public ResponseEntity<?> editNoteByUserId(@Valid @RequestBody Note editNote, BindingResult result,
-            @PathVariable Long userId, @PathVariable Long noteId) {
+            @PathVariable Long userId, @PathVariable Long noteId, Principal principal) {
+
         // To handle of obligations of object attributes
         if (result.hasFieldErrors()) {
             return validation(result);
+        }
+
+        // Check if the user that wants to access the resource is the owner
+        if (!isOwner(userId, principal)) {
+            // return code response 404
+            return ResponseEntity.notFound().build();
         }
 
         // Search for a specific user and specific note and if they are present then
@@ -184,8 +186,18 @@ public class UserController {
         Optional<Note> optionalNote = noteService.findById(noteId);
 
         if (optionalUser.isPresent() && optionalNote.isPresent()) {
-            User updateUser = service.editNoteByUserId(optionalUser.get(), optionalNote.get(), editNote);
-            return ResponseEntity.status(HttpStatus.CREATED).body(updateUser);
+            Optional<User> optionalUpdateUser = service.editNoteByUserId(optionalUser.get(), noteId, editNote);
+
+            // If the 'Update Optional User' option is present, it means that the note could
+            // be updated.
+            if (optionalUpdateUser.isPresent()) {
+                User updateUser = optionalUpdateUser.get();
+
+                return ResponseEntity.status(HttpStatus.CREATED).body(updateUser);
+            } else {
+                // Else returns code response 404
+                return ResponseEntity.notFound().build();
+            }
         }
         // Else returns code response 404
         return ResponseEntity.notFound().build();
@@ -193,7 +205,14 @@ public class UserController {
 
     // To create an endpoint that allows deleting a certain note of a certain user
     @DeleteMapping("/{userId}/notes/{noteId}")
-    public ResponseEntity<?> deleteNoteByUserId(@PathVariable Long userId, @PathVariable Long noteId) {
+    public ResponseEntity<?> deleteNoteByUserId(@PathVariable Long userId, @PathVariable Long noteId,
+            Principal principal) {
+
+        // Check if the user that wants to access the resource is the owner
+        if (!isOwner(userId, principal)) {
+            // return code response 404
+            return ResponseEntity.notFound().build();
+        }
 
         // Search for a specific user and specific note and if they are present then
         // delete a note
@@ -201,8 +220,18 @@ public class UserController {
         Optional<Note> optionalNote = noteService.findById(noteId);
 
         if (optionalUser.isPresent() && optionalNote.isPresent()) {
-            User updateUser = service.deleteNoteByUserId(optionalUser.get(), optionalNote.get());
-            return ResponseEntity.ok(updateUser);
+            Optional<User> optionalUpdateUser = service.deleteNoteByUserId(optionalUser.get(), noteId);
+
+            // If the 'Update Optional User' option is present, it means that the note could
+            // be updated.
+            if (optionalUpdateUser.isPresent()) {
+                User updateUser = optionalUpdateUser.get();
+
+                return ResponseEntity.ok(updateUser);
+            } else {
+                // Else returns code response 404
+                return ResponseEntity.notFound().build();
+            }
         }
         // Else returns code response 404
         return ResponseEntity.notFound().build();
@@ -213,13 +242,20 @@ public class UserController {
     // -----------------------------
 
     // To create an endpoint that allows invoking the method 'getNotesByUserId'.
-    @GetMapping("/{id_user}/notes")
-    public ResponseEntity<?> getNotesByUserId(@PathVariable Long id_user) {
+    @GetMapping("/{userId}/notes")
+    public ResponseEntity<?> getNotesByUserId(@PathVariable Long userId, Principal principal) {
+
+        // Check if the user that wants to access the resource is the owner
+        if (!isOwner(userId, principal)) {
+            // return code response 404
+            return ResponseEntity.notFound().build();
+        }
+
         // Search for a specific user and if it's present then return it.
-        Optional<User> optionalUser = service.findById(id_user);
+        Optional<User> optionalUser = service.findById(userId);
 
         if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(service.getNotesByUserId(id_user));
+            return ResponseEntity.ok(service.getNotesByUserId(userId));
         }
         // Else returns code response 404
         return ResponseEntity.notFound().build();
@@ -239,6 +275,27 @@ public class UserController {
         });
 
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    // To know if the user who wants to access the resource is the owner or not
+    private boolean isOwner(Long id, Principal principal) {
+        boolean result = true;
+
+        // Get the username of the authenticated user
+        String authenticatedUsername = principal.getName();
+
+        // Check if the authenticated user is the owner of the resource
+        Optional<User> optionalUser1 = service.findById(id);
+
+        if (optionalUser1.isPresent()) {
+            User userDb = optionalUser1.get();
+
+            if (!userDb.getUsername().equals(authenticatedUsername)) {
+                result = false;
+            }
+        }
+
+        return result;
     }
 
 }

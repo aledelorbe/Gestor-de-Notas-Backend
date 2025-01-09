@@ -11,6 +11,7 @@ from user;
 select *
 from note;
 
+
 -- Role entity
 
 /*

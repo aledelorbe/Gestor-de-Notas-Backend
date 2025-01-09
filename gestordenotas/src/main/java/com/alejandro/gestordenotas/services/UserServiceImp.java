@@ -81,7 +81,7 @@ public class UserServiceImp implements UserService {
         user.setRoles(roles);
         // Encrypt the password of the user and save the user in the db
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
+
         return repository.save(user);
     }
 
@@ -148,23 +148,45 @@ public class UserServiceImp implements UserService {
     // To update the information about the note
     @Override
     @Transactional
-    public User editNoteByUserId(User userDb, Note noteDb, Note editNote) {
+    public Optional<User> editNoteByUserId(User userDb, Long noteId, Note editNote) {
 
-        // update all of object attributes (in this case update only 'content'
-        // attribute)
-        noteDb.setContent(editNote.getContent());
+        // Search for the note that will be updated
+        Optional<Note> optionalNote = userDb.getNotes().stream().filter(many -> many.getId().equals(noteId))
+                .findFirst();
 
-        return repository.save(userDb);
+        // If this note is present it means the user is owner of note
+        if (optionalNote.isPresent()) {
+            // Update all of object attributes (in this case update only 'content'
+            // attribute)
+            Note noteDb = optionalNote.get();
+
+            noteDb.setContent(editNote.getContent());
+
+            // and save the information in the db
+            return Optional.of(repository.save(userDb));
+        }
+
+        return Optional.empty();
     }
 
     // To delete a certain note in the db
     @Override
     @Transactional
-    public User deleteNoteByUserId(User userDb, Note noteDb) {
+    public Optional<User> deleteNoteByUserId(User userDb, Long noteId) {
 
-        userDb.getNotes().remove(noteDb);
+        // Search for the note that will be updated
+        Optional<Note> optionalNote = userDb.getNotes().stream().filter(many -> many.getId().equals(noteId)).findFirst();
+        
+        // If this note is present it means the user is owner of note
+        if (optionalNote.isPresent()) {
+            // Delete the note
+            userDb.getNotes().remove(optionalNote.get());
 
-        return repository.save(userDb);
+            // and save the information in the db
+            return Optional.of(repository.save(userDb)); 
+        }
+
+        return Optional.empty();
     }
 
     // -----------------------------
