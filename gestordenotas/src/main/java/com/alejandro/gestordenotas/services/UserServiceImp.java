@@ -16,6 +16,7 @@ import com.alejandro.gestordenotas.entities.Role;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.repositories.RoleRepository;
 import com.alejandro.gestordenotas.repositories.UserRepository;
+import com.alejandro.gestordenotas.services.dto.UserDto;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -106,6 +107,47 @@ public class UserServiceImp implements UserService {
         return optionalUser;
     }
 
+    // To delete a specific user based on its id
+    @Override
+    @Transactional
+    public Optional<User> deleteById(Long id) {
+        // Search for a specific user
+        Optional<User> optionalUser = repository.findById(id);
+
+        // If the user is present then delete that user
+        optionalUser.ifPresent(userDb -> {
+            repository.deleteById(id);
+        });
+
+        return optionalUser;
+    }
+
+    // To convert a specific user into an admin user
+    public User convertUserIntoAdmin(User userDb) {
+        // Find the specific role
+        Optional<Role> optionalRole = roleRepository.findByName("ROLE_ADMIN");
+
+        // If the role is present then...
+        if (optionalRole.isPresent()) {
+
+            boolean hasRole = userDb.getRoles().stream().filter(role -> "ROLE_ADMIN".equals(role.getName())).findFirst().isPresent();
+
+            if (hasRole) {
+                // remove this role to this user
+                userDb.getRoles().remove(optionalRole.get());
+            } else {
+                // add this role to this user
+                userDb.getRoles().add(optionalRole.get());
+            }
+        }
+
+        return repository.save(userDb);
+    }
+
+    public List<UserDto> getAllUsersWithRoleUser() {
+        return repository.getAllUsersWithRoleUser();
+    }
+
     // To change the enabled attribute a specific user based on its id from active
     // to inactive and vice verse.
     // @Override
@@ -175,15 +217,16 @@ public class UserServiceImp implements UserService {
     public Optional<User> deleteNoteByUserId(User userDb, Long noteId) {
 
         // Search for the note that will be updated
-        Optional<Note> optionalNote = userDb.getNotes().stream().filter(many -> many.getId().equals(noteId)).findFirst();
-        
+        Optional<Note> optionalNote = userDb.getNotes().stream().filter(many -> many.getId().equals(noteId))
+                .findFirst();
+
         // If this note is present it means the user is owner of note
         if (optionalNote.isPresent()) {
             // Delete the note
             userDb.getNotes().remove(optionalNote.get());
 
             // and save the information in the db
-            return Optional.of(repository.save(userDb)); 
+            return Optional.of(repository.save(userDb));
         }
 
         return Optional.empty();
@@ -198,6 +241,13 @@ public class UserServiceImp implements UserService {
     @Transactional(readOnly = true)
     public List<Note> getNotesByUserId(Long id_user) {
         return repository.getNotesByUserId(id_user);
+    }
+
+    // To get a certain user based on its username 
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> getByUsername(String username) {
+        return repository.findByUsername(username);
     }
 
 }

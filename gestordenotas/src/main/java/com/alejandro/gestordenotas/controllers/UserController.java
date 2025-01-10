@@ -51,7 +51,14 @@ public class UserController {
 
     // To create an endpoint that allows invoking the method findById.
     @GetMapping("/{id}")
-    public ResponseEntity<?> user(@PathVariable Long id) {
+    public ResponseEntity<?> user(@PathVariable Long id, Principal principal) {
+
+        // Check if the user that wants to access the resource is the owner
+        if (!isOwner(id, principal)) {
+            // return code response 404
+            return ResponseEntity.notFound().build();
+        }
+
         // Search for a specific user and if it's present then return it.
         Optional<User> optionalUser = service.findById(id);
 
@@ -122,16 +129,26 @@ public class UserController {
     }
 
     // To create an endpoint that allows deleting a specific user based its id.
-    // @PatchMapping("/{id}")
-    // public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-    // // Search for a specific user and if it's present then return specific user
-    // Optional<User> optionalUser = service.deleteById(id);
-    // if (optionalUser.isPresent()) {
-    // return ResponseEntity.ok(optionalUser.orElseThrow());
-    // }
-    // // Else return code response 404
-    // return ResponseEntity.notFound().build();
-    // }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id, Principal principal) {
+
+        // Check if the user that wants to access the resource is the owner
+        if (!isOwner(id, principal)) {
+
+            // return code response 404
+            return ResponseEntity.notFound().build();
+        }
+
+        // Find specific user and if it's present then return specific user
+        Optional<User> optionalUser = service.deleteById(id);
+
+        // Todo: when the object user has a jsonIgnore
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.ok().build();
+        }
+        // Else return code response 404
+        return ResponseEntity.notFound().build();
+    }
 
     // -----------------------------
     // Methods for note entity
@@ -235,6 +252,28 @@ public class UserController {
         }
         // Else returns code response 404
         return ResponseEntity.notFound().build();
+    }
+
+    // To create an endpoint that allows converting a user into an administrator
+    // user
+    @PatchMapping("/super-admin/{userId}")
+    public ResponseEntity<?> convertUserIntoAdmin(@PathVariable Long userId) {
+
+        // Search for a specific user
+        Optional<User> optionalUser = service.findById(userId);
+
+        // If this user is present then the user is converted into an admin user
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.ok(service.convertUserIntoAdmin(optionalUser.get()));
+        }
+        // Else returns code response 404
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<?> getUsers() {
+
+        return ResponseEntity.ok(service.getAllUsersWithRoleUser());
     }
 
     // -----------------------------
