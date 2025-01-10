@@ -29,10 +29,14 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     // To get all of the users with role 'users'
     @Query("""
-        SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.UserDto(u.id, u.username, u.enabled) 
-        FROM User u 
-        JOIN u.roles r 
-        WHERE r.id = 1
+        SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.UserDto(u.id, u.username, u.enabled)
+        FROM User u
+        WHERE u.id NOT IN (
+            SELECT DISTINCT u2.id
+            FROM User u2
+            JOIN u2.roles r
+            WHERE r.id = 2 OR r.id = 3
+        )
     """)
     List<UserDto> getAllUsersWithRoleUser();
 
