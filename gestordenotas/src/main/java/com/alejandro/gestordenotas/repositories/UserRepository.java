@@ -79,4 +79,20 @@ public interface UserRepository extends CrudRepository<User, Long> {
     """)
     List<Long> getAllIdWithRoleAdminAndSuperAdmin();
 
+    // To get the id of the user with the super admin role
+    @Query("""
+        SELECT u.id
+        FROM User u
+        WHERE u.id IN (
+            SELECT DISTINCT u2.id
+            FROM User u2
+            JOIN u2.roles r
+            WHERE r.id = 3
+        )
+    """)
+    Long getIdOfSuperAdmin();
+
+    // Prohibir que al super admin le quiten el admin
+    // Agregar el campo isAdmin
+    // Entonces habra dos dto? una con el campo isAdmin y otra sin el campo isAdmin??
 }

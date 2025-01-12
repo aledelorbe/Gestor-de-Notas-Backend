@@ -41,6 +41,8 @@ public interface UserService {
     // Methods aux
     public List<Long> getAllIdWithRoleAdminAndSuperAdmin();
 
+    public boolean isSuperAdmin(Long id);
+
     // -----------------------------
     // Methods for note entity
     // -----------------------------

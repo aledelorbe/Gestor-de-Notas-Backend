@@ -208,6 +208,13 @@ public class UserController {
     @PatchMapping("/super-admin/convert-user/{userId}")
     public ResponseEntity<?> convertUserIntoAdmin(@PathVariable Long userId) {
 
+        // If the user to remove the admin role is a user with the super admin
+        // role, then do not allow that operation.
+        if (service.isSuperAdmin(userId)) {
+            // Else returns code response 404
+            return ResponseEntity.notFound().build();
+        }
+
         // Search for a specific user
         Optional<User> optionalUser = service.findById(userId);
 
@@ -223,6 +230,13 @@ public class UserController {
     // 'enableUser'.
     @PatchMapping("/super-admin/enabled-user/{userId}")
     public ResponseEntity<?> superAdminEnableUser(@PathVariable Long userId) {
+
+        // If the user to remove the admin role is a user with the super admin
+        // role, then do not allow that operation.
+        if (service.isSuperAdmin(userId)) {
+            // Else returns code response 404
+            return ResponseEntity.notFound().build();
+        }
 
         // Search for a specific user and if it's present then return it.
         Optional<User> optionalUser = service.findById(userId);

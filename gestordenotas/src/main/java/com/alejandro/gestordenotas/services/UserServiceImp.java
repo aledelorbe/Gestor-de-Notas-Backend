@@ -188,11 +188,26 @@ public class UserServiceImp implements UserService {
     }
 
     // Methods aux ----------------------------------
+    
     // To get all of the id's of users with role 'admin' and 'super admin'
     @Override
     @Transactional(readOnly = true)
     public List<Long> getAllIdWithRoleAdminAndSuperAdmin() {
         return repository.getAllIdWithRoleAdminAndSuperAdmin();
+    }
+    
+    // To know if the user ID is the same as the super admin ID
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isSuperAdmin(Long id) {
+
+        boolean result = false;
+
+        if (id == repository.getIdOfSuperAdmin()) {
+            result = true;
+        }
+
+        return result;
     }
 
     // -----------------------------
