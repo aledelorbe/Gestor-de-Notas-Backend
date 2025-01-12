@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 // import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -40,6 +43,7 @@ public class User {
     private String username;
 
     @NotBlank // To obligate to this attribute not to empty or blank values.
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     // This attribute can be empty because it is set in cycle life events of entity objects
@@ -52,7 +56,7 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_user")
     private List<Note> notes;
-
+    
     // To set a relationship many to many
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_role"))
@@ -87,15 +91,16 @@ public class User {
         this.password = password;
     }
 
-    // @JsonIgnore // To not send the information about 'notes'
+    @JsonIgnore // To not send the information about 'notes'
     public List<Note> getNotes() {
         return notes;
     }
-
+    
     public void setNotes(List<Note> notes) {
         this.notes = notes;
     }
-
+    
+    @JsonIgnore // To not send the information about 'notes'
     public Set<Role> getRoles() {
         return roles;
     }
