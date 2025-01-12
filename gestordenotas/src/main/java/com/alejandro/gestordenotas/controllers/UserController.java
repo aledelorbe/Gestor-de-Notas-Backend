@@ -24,7 +24,6 @@ import com.alejandro.gestordenotas.entities.Note;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.services.NoteService;
 import com.alejandro.gestordenotas.services.UserService;
-import com.alejandro.gestordenotas.services.dto.UserDto;
 
 import jakarta.validation.Valid;
 
@@ -152,102 +151,6 @@ public class UserController {
         // Else return code response 404
         return ResponseEntity.notFound().build();
     }
-
-    // Endpoint's for admin role ----------------------
-    
-    // To create an endpoint that allows invoking the method
-    // 'getAllUsersWithRoleUser'.
-    @GetMapping("/admin")
-    public ResponseEntity<?> getUsersWithRoleUser() {
-        return ResponseEntity.ok(service.getAllUsersWithRoleUser());
-    }
-    
-    // To create an endpoint that allows invoking the method
-    // 'getUserWithRoleUser'.
-    @GetMapping("/admin/{userId}")
-    public ResponseEntity<?> getUserWithRoleUser(@PathVariable Long userId) {
-
-        // Search for a specific user and if it's present then return it.
-        Optional<UserDto> optionalUser = service.getUserWithRoleUser(userId);
-
-        if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(optionalUser.orElseThrow());
-        }
-        // Else returns code response 404
-        return ResponseEntity.notFound().build();
-    }
-
-    // To create an endpoint that allows invoking the method
-    // 'enableUser'.
-    @PatchMapping("/admin/{userId}")
-    public ResponseEntity<?> enableUser(@PathVariable Long userId) {
-
-        List<Long> ids = service.getAllIdWithRoleAdminAndSuperAdmin();
-
-        // If the list of id's contains the 'userId' it means that the admin user
-        // wants to delete a user with role admin or super admin.
-        if (ids.contains(userId)) {
-            // Else returns code response 404
-            return ResponseEntity.notFound().build();
-        }
-
-        return superAdminEnableUser(userId);
-    }
-    
-    // Endpoint's for super admin role ----------------------
-
-    // To create an endpoint that allows invoking the method
-    // 'getAllUsersWithRoleUser'.
-    @GetMapping("/super-admin")
-    public ResponseEntity<?> getUsersAndAdmins() {
-        return ResponseEntity.ok(service.getAllUsersWithRoleUserAndAdmin());
-    }
-
-    // To create an endpoint that allows converting a user into an administrator
-    // user
-    @PatchMapping("/super-admin/convert-user/{userId}")
-    public ResponseEntity<?> convertUserIntoAdmin(@PathVariable Long userId) {
-
-        // If the user to remove the admin role is a user with the super admin
-        // role, then do not allow that operation.
-        if (service.isSuperAdmin(userId)) {
-            // Else returns code response 404
-            return ResponseEntity.notFound().build();
-        }
-
-        // Search for a specific user
-        Optional<User> optionalUser = service.findById(userId);
-
-        // If this user is present then the user is converted into an admin user
-        if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(service.convertUserIntoAdmin(optionalUser.get()));
-        }
-        // Else returns code response 404
-        return ResponseEntity.notFound().build();
-    }
-
-    // To create an endpoint that allows invoking the method
-    // 'enableUser'.
-    @PatchMapping("/super-admin/enabled-user/{userId}")
-    public ResponseEntity<?> superAdminEnableUser(@PathVariable Long userId) {
-
-        // If the user to remove the admin role is a user with the super admin
-        // role, then do not allow that operation.
-        if (service.isSuperAdmin(userId)) {
-            // Else returns code response 404
-            return ResponseEntity.notFound().build();
-        }
-
-        // Search for a specific user and if it's present then return it.
-        Optional<User> optionalUser = service.findById(userId);
-
-        if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(service.enabledUser(optionalUser.get()));
-        }
-        // Else returns code response 404
-        return ResponseEntity.notFound().build();
-    }
-
 
     // -----------------------------
     // Methods for note entity
