@@ -55,7 +55,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     
     // To get all of the users with role 'users' and role 'admin'
     @Query("""
-        SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.UserDto(u.id, u.username, u.enabled)
+        SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.AdminDto(u.id, u.username, u.enabled, u.admin)
         FROM User u
         WHERE u.id NOT IN (
             SELECT DISTINCT u2.id
@@ -92,7 +92,4 @@ public interface UserRepository extends CrudRepository<User, Long> {
     """)
     Long getIdOfSuperAdmin();
 
-    // Prohibir que al super admin le quiten el admin
-    // Agregar el campo isAdmin
-    // Entonces habra dos dto? una con el campo isAdmin y otra sin el campo isAdmin??
 }

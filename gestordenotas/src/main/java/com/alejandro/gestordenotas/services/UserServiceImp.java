@@ -136,11 +136,13 @@ public class UserServiceImp implements UserService {
                     .isPresent();
 
             if (hasRole) {
-                // remove this role to this user
+                // remove this role to this user and set with value false the attribute admin
                 userDb.getRoles().remove(optionalRole.get());
+                userDb.setAdmin(false);
             } else {
-                // add this role to this user
+                // add this role to this user and set with value true the attribute admin
                 userDb.getRoles().add(optionalRole.get());
+                userDb.setAdmin(true);
             }
         }
 

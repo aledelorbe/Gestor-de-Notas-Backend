@@ -11,7 +11,6 @@ from user;
 select *
 from note;
 
-
 -- Role entity
 
 /*
@@ -57,7 +56,5 @@ from user
 where id_user in (select id_user
 						from users_roles
 						where id_role = 2 or id_role = 3);
-
-
 
 

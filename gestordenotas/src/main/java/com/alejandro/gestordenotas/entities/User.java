@@ -19,7 +19,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 
@@ -43,8 +42,7 @@ public class User {
     @NotBlank // To obligate to this attribute not to empty or blank values.
     private String password;
 
-    // This attribute is not mapped to any fields in the table.
-    @Transient
+    // This attribute can be empty because it is set in cycle life events of entity objects
     private boolean admin;
 
     // This attribute can be empty because it is set in cycle life events of entity objects
@@ -122,10 +120,12 @@ public class User {
         this.enabled = enabled;
     }
 
-    // To set the date when the record is saved in the db 
+    // To set the status of user (it can or not can't login the app) and to set the user is not admin
+    // when the record is saved in the db 
     @PrePersist
     public void prePersist() {
         this.enabled = true;
+        this.admin = false;
     }
 
 }

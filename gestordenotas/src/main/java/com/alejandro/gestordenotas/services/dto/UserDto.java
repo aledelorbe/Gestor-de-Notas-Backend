@@ -2,11 +2,11 @@ package com.alejandro.gestordenotas.services.dto;
 
 public class UserDto {
 
-    private Long id;
+    protected Long id;
 
-    private String username;
+    protected String username;
 
-    private boolean enabled;
+    protected boolean enabled;
 
     public UserDto(Long id, String username, boolean enabled) {
         this.id = id;
