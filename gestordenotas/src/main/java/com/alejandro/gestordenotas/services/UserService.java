@@ -15,21 +15,31 @@ public interface UserService {
     // Methods for user entity
     // -----------------------------
 
+    // Methods for user role
     public List<User> findAll();
-
+    
     public Optional<User> findById(Long id);
-
+    
     public User save(User user);
-
+    
     public Optional<User> update(Long id, User user);
-
+    
     public Optional<User> deleteById(Long id);
+    
+    // Methods for admin role
+    public List<UserDto> getAllUsersWithRoleUser();
+
+    public Optional<UserDto> getUserWithRoleUser(Long id);
+
+    public User enabledUser(User userDb);
+    
+    // Methods for super admin role
+    public List<UserDto> getAllUsersWithRoleUserAndAdmin();
     
     public User convertUserIntoAdmin(User userDb);
 
-    public List<UserDto> getAllUsersWithRoleUser();
-
-    // public Optional<User> updateEnabledById(Long id);
+    // Methods aux
+    public List<Long> getAllIdWithRoleAdminAndSuperAdmin();
 
     // -----------------------------
     // Methods for note entity

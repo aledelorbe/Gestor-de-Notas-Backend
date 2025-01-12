@@ -123,6 +123,8 @@ public class UserServiceImp implements UserService {
     }
 
     // To convert a specific user into an admin user
+    @Override
+    @Transactional
     public User convertUserIntoAdmin(User userDb) {
         // Find the specific role
         Optional<Role> optionalRole = roleRepository.findByName("ROLE_ADMIN");
@@ -130,7 +132,8 @@ public class UserServiceImp implements UserService {
         // If the role is present then...
         if (optionalRole.isPresent()) {
 
-            boolean hasRole = userDb.getRoles().stream().filter(role -> "ROLE_ADMIN".equals(role.getName())).findFirst().isPresent();
+            boolean hasRole = userDb.getRoles().stream().filter(role -> "ROLE_ADMIN".equals(role.getName())).findFirst()
+                    .isPresent();
 
             if (hasRole) {
                 // remove this role to this user
@@ -144,34 +147,53 @@ public class UserServiceImp implements UserService {
         return repository.save(userDb);
     }
 
+    // Methods for admin role ----------------------
+
+    // To get all of the users with the role 'user'
+    @Override
+    @Transactional(readOnly = true)
     public List<UserDto> getAllUsersWithRoleUser() {
         return repository.getAllUsersWithRoleUser();
     }
 
-    // To change the enabled attribute a specific user based on its id from active
-    // to inactive and vice verse.
-    // @Override
-    // @Transactional
-    // public Optional<User> updateEnabledById(Long id) {
-    // // Search a specific user
-    // Optional<User> optionalUser = repository.findById(id);
+    // To get all of the users with the role 'user'
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<UserDto> getUserWithRoleUser(Long id) {
+        return repository.getUserWithRoleUser(id);
+    }
 
-    // // If the user is present then...
-    // if (optionalUser.isPresent()) {
-    // // change the enabled attribute
-    // User userDb = optionalUser.get();
+    // To enable or disable a specific 'user'
+    @Override
+    @Transactional
+    public User enabledUser(User userDb) {
 
-    // if( userDb.getEnabled() == 1 ) {
-    // userDb.setEnabled(0);
-    // } else {
-    // userDb.setEnabled(1);
-    // }
+        // If the user is enabled then disable it
+        if (userDb.isEnabled()) {
+            userDb.setEnabled(false);
+        } else {
+            userDb.setEnabled(true);
+        }
 
-    // return Optional.ofNullable(repository.save(userDb));
-    // }
+        return repository.save(userDb);
+    }
 
-    // return optionalUser;
-    // }
+    // Methods for super admin role -----------------
+
+    // To get all of the users with the role 'user'
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserDto> getAllUsersWithRoleUserAndAdmin() {
+        return repository.getAllUsersWithRoleUserAndAdmin();
+    }
+
+    // Methods aux ----------------------------------
+    // To get all of the id's of users with role 'admin' and 'super admin'
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getAllIdWithRoleAdminAndSuperAdmin() {
+        return repository.getAllIdWithRoleAdminAndSuperAdmin();
+    }
 
     // -----------------------------
     // Methods for note entity
@@ -243,7 +265,7 @@ public class UserServiceImp implements UserService {
         return repository.getNotesByUserId(id_user);
     }
 
-    // To get a certain user based on its username 
+    // To get a certain user based on its username
     @Override
     @Transactional(readOnly = true)
     public Optional<User> getByUsername(String username) {
