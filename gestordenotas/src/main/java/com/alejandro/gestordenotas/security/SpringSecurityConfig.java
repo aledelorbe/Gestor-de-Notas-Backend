@@ -3,6 +3,7 @@ package com.alejandro.gestordenotas.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 // import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -38,26 +39,22 @@ public class SpringSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests((authz) -> authz
 
-                // // Endpoints for admin role
-                // .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
-                // // Endpoints for  user role
-                // .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasRole("USER") 
-                // .requestMatchers(HttpMethod.PUT, "/api/users/{id}").hasRole("USER") 
-                // .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasRole("USER") 
-                // .requestMatchers(HttpMethod.GET, "/api/users/{id_user}/notes").hasRole("USER") // Notes
-                // .requestMatchers(HttpMethod.POST, "/api/users/{userId}/notes").hasRole("USER") 
-                // .requestMatchers(HttpMethod.PATCH, "/api/users/{userId}/notes/{noteId}").hasRole("USER")
-                // .requestMatchers(HttpMethod.DELETE, "/api/users/{userId}/notes/{noteId}").hasRole("USER")
-                // // Endpoint public
-                // .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
-                
-                .requestMatchers( "/api/users/**").permitAll()
-                .anyRequest().authenticated())
-                .addFilter(new JwtAuthenticationFilter(authenticationManager())) // login
-                .addFilter(new JwtValidationFilter(authenticationManager())) // to validate the token
-                .csrf(config -> config.disable())
-                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .build();
+            // Endpoint public
+            .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+            // Endpoints for super admin role
+            .requestMatchers("/api/super-admins/**").hasRole("SUPER_ADMIN")
+            // Endpoints for admin role
+            .requestMatchers("/api/admins/**").hasRole("ADMIN")
+            // Endpoints for user role
+            .requestMatchers("/api/users/**").hasRole("USER") 
+            
+            // .requestMatchers( "/api/users/**").permitAll()
+            .anyRequest().authenticated())
+            .addFilter(new JwtAuthenticationFilter(authenticationManager())) // login
+            .addFilter(new JwtValidationFilter(authenticationManager())) // to validate the token
+            .csrf(config -> config.disable())
+            .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .build();
     }
 
 }
