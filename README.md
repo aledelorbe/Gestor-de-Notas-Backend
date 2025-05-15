@@ -86,6 +86,19 @@ Este proyecto implementa **Spring Security** para proporcionar encriptación de 
 - `utils/`: Carpeta donde se almacenan las clases las cuales tienen métodos utilitarios que se pueden usar de manera transversal en la aplicación.
 - `security/`: Carpeta donde se almacena los archivos referentes a los temas de seguridad como la generación del token de autenticación, la validación del token de autenticación y las reglas de seguridad para los distintos endpoints.
 
+
+## Futuras mejoras
+
+Implementacion de pruebas unitarias y de integracion.
+
+Limpiar comentarios innecesarios la clase `UserServiceImp`.
+
+Añadir el apartado demo en el readme.
+
+Reorganizar el apartador `caracteristicas` asi como el de los demas proyectos.
+
+Actualizar getNotes como getPets.
+
 ----
 
 # Notes Manager (Backend)
