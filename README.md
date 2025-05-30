@@ -95,9 +95,11 @@ Limpiar comentarios innecesarios la clase `UserServiceImp`.
 
 Añadir el apartado demo en el readme.
 
-Reorganizar el apartador `caracteristicas` asi como el de los demas proyectos.
+Mover la carpeta dto
 
 Actualizar getNotes como getPets.
+
+Reorganizar el apartador `caracteristicas` del readme, asi como el de los demas proyectos.
 
 ----
 
