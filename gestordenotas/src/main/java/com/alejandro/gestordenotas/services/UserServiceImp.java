@@ -51,14 +51,6 @@ public class UserServiceImp implements UserService {
         return repository.findById(id);
     }
 
-    // // To save a new user in the db
-    // // This method is a 'join point'
-    // @Override
-    // @Transactional
-    // public User save(User user) {
-    // return repository.save(user);
-    // }
-
     // To save a new user in the db
     // This method is a 'join point'
     @Override
@@ -210,65 +202,6 @@ public class UserServiceImp implements UserService {
         }
 
         return result;
-    }
-
-    // -----------------------------
-    // Methods for note entity
-    // -----------------------------
-
-    // To save a new note of a certain user in the db
-    @Override
-    @Transactional
-    public User saveNoteByUserId(User userDb, Note newNote) {
-
-        userDb.getNotes().add(newNote);
-
-        return repository.save(userDb);
-    }
-
-    // To update the information about the note
-    @Override
-    @Transactional
-    public Optional<User> editNoteByUserId(User userDb, Long noteId, Note editNote) {
-
-        // Search for the note that will be updated
-        Optional<Note> optionalNote = userDb.getNotes().stream().filter(many -> many.getId().equals(noteId))
-                .findFirst();
-
-        // If this note is present it means the user is owner of note
-        if (optionalNote.isPresent()) {
-            // Update all of object attributes (in this case update only 'content'
-            // attribute)
-            Note noteDb = optionalNote.get();
-
-            noteDb.setContent(editNote.getContent());
-
-            // and save the information in the db
-            return Optional.of(repository.save(userDb));
-        }
-
-        return Optional.empty();
-    }
-
-    // To delete a certain note in the db
-    @Override
-    @Transactional
-    public Optional<User> deleteNoteByUserId(User userDb, Long noteId) {
-
-        // Search for the note that will be updated
-        Optional<Note> optionalNote = userDb.getNotes().stream().filter(many -> many.getId().equals(noteId))
-                .findFirst();
-
-        // If this note is present it means the user is owner of note
-        if (optionalNote.isPresent()) {
-            // Delete the note
-            userDb.getNotes().remove(optionalNote.get());
-
-            // and save the information in the db
-            return Optional.of(repository.save(userDb));
-        }
-
-        return Optional.empty();
     }
 
     // -----------------------------

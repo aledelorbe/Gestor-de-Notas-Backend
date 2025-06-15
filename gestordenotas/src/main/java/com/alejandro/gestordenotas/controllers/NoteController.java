@@ -48,23 +48,25 @@ public class NoteController {
     // Methods for note entity
     // -----------------------------
 
-    // To create an endpoint that allows invoking the method 'getNotesByUserId'.
+    // To create an endpoint that allows invoking the 'getNotesByUserId' method.
     @GetMapping("/{userId}/notes")
     public ResponseEntity<?> getNotesByUserId(@PathVariable Long userId, Principal principal) {
 
         // Check if the user that wants to access the resource is the owner
         if (!access.isOwner(userId, principal)) {
-            // return code response 404
+            // return a 404 status code.
             return ResponseEntity.notFound().build();
         }
 
-        // Search for a specific user and if it's present then return it.
+        // Search for a specific user
         Optional<User> optionalUser = userService.findById(userId);
 
+        // if the user is present then return the note array.
         if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(userService.getNotesByUserId(userId));
+            return ResponseEntity.ok(optionalUser.get().getNotes());
         }
-        // Else returns code response 404
+
+        // Else, return a 404 status code.
         return ResponseEntity.notFound().build();
     }
 
@@ -77,20 +79,15 @@ public class NoteController {
             return utilValidation.validation(result);
         }
 
-        // Check if the user that wants to access the resource is the owner
-        if (!access.isOwner(userId, principal)) {
-            // return code response 404
-            return ResponseEntity.notFound().build();
+        // Call the 'saveNoteByUser' method
+        Optional<User> optionalNewUser = service.saveNoteByUser(userId, newNote);
+
+        // if the user is present then it means that the object could be saved
+        if (optionalNewUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(optionalNewUser.get());
         }
 
-        // Search for a specific user if it exists then save the note
-        Optional<User> optionalUser = userService.findById(userId);
-
-        if (optionalUser.isPresent()) {
-            User newUser = userService.saveNoteByUserId(optionalUser.get(), newNote);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-        }
-        // Else returns code response 404
+        // Else, return a 404 status code.
         return ResponseEntity.notFound().build();
     }
 
@@ -111,26 +108,15 @@ public class NoteController {
             return ResponseEntity.notFound().build();
         }
 
-        // Search for a specific user and specific note and if they are present then
-        // edit the information about note
-        Optional<User> optionalUser = userService.findById(userId);
-        Optional<Note> optionalNote = service.findById(noteId);
+        // Call the 'editNoteByUser' method
+        Optional<User> optionalUpdateUser = service.editNoteByUser(userId, noteId, editNote);
 
-        if (optionalUser.isPresent() && optionalNote.isPresent()) {
-            Optional<User> optionalUpdateUser = userService.editNoteByUserId(optionalUser.get(), noteId, editNote);
-
-            // If the 'Update Optional User' option is present, it means that the note could
-            // be updated.
-            if (optionalUpdateUser.isPresent()) {
-                User updateUser = optionalUpdateUser.get();
-
-                return ResponseEntity.status(HttpStatus.CREATED).body(updateUser);
-            } else {
-                // Else returns code response 404
-                return ResponseEntity.notFound().build();
-            }
+        // if the user is present then it means that the object could be updated
+        if ( optionalUpdateUser.isPresent() ) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(optionalUpdateUser.get());
         }
-        // Else returns code response 404
+
+        // Else, return a 404 status code.
         return ResponseEntity.notFound().build();
     }
 
@@ -145,26 +131,15 @@ public class NoteController {
             return ResponseEntity.notFound().build();
         }
 
-        // Search for a specific user and specific note and if they are present then
-        // delete a note
-        Optional<User> optionalUser = userService.findById(userId);
-        Optional<Note> optionalNote = service.findById(noteId);
+        // Call the 'deleteNoteByUser' method
+        Optional<User> optionalUpdateUser = service.deleteNoteByUser(userId, noteId);
 
-        if (optionalUser.isPresent() && optionalNote.isPresent()) {
-            Optional<User> optionalUpdateUser = userService.deleteNoteByUserId(optionalUser.get(), noteId);
-
-            // If the 'Update Optional User' option is present, it means that the note could
-            // be updated.
-            if (optionalUpdateUser.isPresent()) {
-                User updateUser = optionalUpdateUser.get();
-
-                return ResponseEntity.ok(updateUser);
-            } else {
-                // Else returns code response 404
-                return ResponseEntity.notFound().build();
-            }
+        // if the user is present then it means that the object could be deleted
+        if ( optionalUpdateUser.isPresent() ) {
+            return ResponseEntity.status(HttpStatus.OK).body(optionalUpdateUser.get());
         }
-        // Else returns code response 404
+
+        // Else, return a 404 status code.
         return ResponseEntity.notFound().build();
     }
 

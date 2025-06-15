@@ -66,6 +66,7 @@ public class UserController {
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(optionalUser.orElseThrow());
         }
+        
         // Else returns code response 404
         return ResponseEntity.notFound().build();
     }

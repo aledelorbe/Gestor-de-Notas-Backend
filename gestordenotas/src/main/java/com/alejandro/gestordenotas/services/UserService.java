@@ -44,16 +44,6 @@ public interface UserService {
     public boolean isSuperAdmin(Long id);
 
     // -----------------------------
-    // Methods for note entity
-    // -----------------------------
-
-    public User saveNoteByUserId(User userDb, Note newNote);
-
-    public Optional<User> editNoteByUserId(User userDb, Long noteId, Note editNote);
-
-    public Optional<User> deleteNoteByUserId(User userDb, Long noteId);
-    
-    // -----------------------------
     // Methods for custom queries of user entity
     // -----------------------------
 
