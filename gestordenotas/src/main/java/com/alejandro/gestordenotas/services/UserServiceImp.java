@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alejandro.gestordenotas.dto.UserDto;
 import com.alejandro.gestordenotas.entities.Note;
 import com.alejandro.gestordenotas.entities.Role;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.repositories.RoleRepository;
 import com.alejandro.gestordenotas.repositories.UserRepository;
-import com.alejandro.gestordenotas.services.dto.UserDto;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -136,37 +136,6 @@ public class UserServiceImp implements UserService {
                 userDb.getRoles().add(optionalRole.get());
                 userDb.setAdmin(true);
             }
-        }
-
-        return repository.save(userDb);
-    }
-
-    // Methods for admin role ----------------------
-
-    // To get all of the users with the role 'user'
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserDto> getAllUsersWithRoleUser() {
-        return repository.getAllUsersWithRoleUser();
-    }
-
-    // To get all of the users with the role 'user'
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<UserDto> getUserWithRoleUser(Long id) {
-        return repository.getUserWithRoleUser(id);
-    }
-
-    // To enable or disable a specific 'user'
-    @Override
-    @Transactional
-    public User enabledUser(User userDb) {
-
-        // If the user is enabled then disable it
-        if (userDb.isEnabled()) {
-            userDb.setEnabled(false);
-        } else {
-            userDb.setEnabled(true);
         }
 
         return repository.save(userDb);

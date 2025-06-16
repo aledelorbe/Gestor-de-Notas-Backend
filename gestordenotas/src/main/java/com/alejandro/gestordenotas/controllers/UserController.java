@@ -66,25 +66,9 @@ public class UserController {
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(optionalUser.orElseThrow());
         }
-        
-        // Else returns code response 404
+
+        // Else, return a 404 status code.
         return ResponseEntity.notFound().build();
-    }
-
-    // To create an endpoint that allows invoking the method save user (the user
-    // will become an admin)
-    // The annotation called 'RequestBody' allows receiving data of a user
-    @PostMapping()
-    public ResponseEntity<?> saveNewUserAdmin(@Valid @RequestBody User user, BindingResult result) {
-        // To handle the obligations of object attributes
-        if (result.hasFieldErrors()) {
-            return utilValidation.validation(result);
-        }
-
-        user.setAdmin(true);
-        // When a new user is created to respond return the same user
-        User newUser = service.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     // To create an endpoint that allows invoking the method save user, but the user
@@ -115,8 +99,7 @@ public class UserController {
 
         // Check if the user that wants to access the resource is the owner
         if (!access.isOwner(id, principal)) {
-
-            // return code response 404
+            // return a 404 status code.
             return ResponseEntity.notFound().build();
         }
 
@@ -126,7 +109,8 @@ public class UserController {
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CREATED).body(optionalUser.orElseThrow());
         }
-        // Else return code response 404
+
+        // Else, return a 404 status code.
         return ResponseEntity.notFound().build();
     }
 
@@ -136,7 +120,6 @@ public class UserController {
 
         // Check if the user that wants to access the resource is the owner
         if (!access.isOwner(id, principal)) {
-
             // return code response 404
             return ResponseEntity.notFound().build();
         }
@@ -148,7 +131,8 @@ public class UserController {
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok().build();
         }
-        // Else return code response 404
+
+        // Else, return a 404 status code.
         return ResponseEntity.notFound().build();
     }
 

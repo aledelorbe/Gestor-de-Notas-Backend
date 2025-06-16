@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import com.alejandro.gestordenotas.dto.UserDto;
 import com.alejandro.gestordenotas.entities.Note;
 import com.alejandro.gestordenotas.entities.User;
-import com.alejandro.gestordenotas.services.dto.UserDto;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 

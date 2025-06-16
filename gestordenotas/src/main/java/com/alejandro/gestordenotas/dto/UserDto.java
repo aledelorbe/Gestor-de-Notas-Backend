@@ -1,4 +1,4 @@
-package com.alejandro.gestordenotas.services.dto;
+package com.alejandro.gestordenotas.dto;
 
 public class UserDto {
 
