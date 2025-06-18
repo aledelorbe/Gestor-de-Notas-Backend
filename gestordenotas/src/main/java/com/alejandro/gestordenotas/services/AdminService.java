@@ -18,6 +18,6 @@ public interface AdminService {
 
     Optional<UserDto> getUserWithRoleUser(Long id);
 
-    User enabledUser(User userDb);
+    Optional<User> disableEnableUser(Long userId);
 
 }

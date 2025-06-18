@@ -1,6 +1,6 @@
 package com.alejandro.gestordenotas.controllers;
 
-// import java.util.List;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,10 +38,6 @@ public class AdminController {
     @Autowired
     private UtilValidation utilValidation;
     
-    // To Inject the 'user controller' dependency
-    // @Autowired
-    // private SuperAdminController superAdminController;
-
     // Endpoint's for the admin role ----------------------
     
     // To create an endpoint that allows invoking the 
@@ -83,21 +79,29 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    // // To create an endpoint that allows invoking the
-    // // 'enableUser' method.
-    // @PatchMapping("/user/{userId}")
-    // public ResponseEntity<?> enableUser(@PathVariable Long userId) {
+    // To create an endpoint that allows invoking the
+    // 'disableEnableUser' method.
+    @PatchMapping("/user/{userId}")
+    public ResponseEntity<?> disableEnableUser(@PathVariable Long userId) {
 
-    //     List<Long> ids = service.getAllIdWithRoleAdminAndSuperAdmin();
+        List<Long> ids = userService.getAllIdWithRoleAdminAndSuperAdmin();
 
-    //     // If the list of id's contains the 'userId' it means that the admin user
-    //     // wants to delete a user with role admin or super admin.
-    //     if ( ids.contains(userId) ) {
-    //         // Else, return a 404 status code.
-    //         return ResponseEntity.notFound().build();
-    //     }
+        // If the list of IDs contains the 'userId', it means that the admin is 
+        // trying to disable a user with the role of admin or super admin.
+        if ( ids.contains(userId) ) {
+            // So, this operation is not allowed.
+            return ResponseEntity.notFound().build();
+        }
 
-    //     return superAdminController.superAdminEnableUser(userId);
-    // }
+        Optional<User> optionalUser = service.disableEnableUser(userId);
+
+        // If the user is present, it means the operation to disable or enable the user was successful.
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.ok(optionalUser.get());
+        }
+        
+        // Else, return a 404 status code.
+        return ResponseEntity.notFound().build();
+    }
 
 }

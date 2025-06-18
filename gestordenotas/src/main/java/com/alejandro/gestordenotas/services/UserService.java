@@ -37,7 +37,7 @@ public interface UserService {
     boolean isSuperAdmin(Long id);
 
     // -----------------------------
-    // Methods for custom queries of user entity
+    // Methods for custom queries of the user entity
     // -----------------------------
 
     List<Note> getNotesByUserId(Long id_user);

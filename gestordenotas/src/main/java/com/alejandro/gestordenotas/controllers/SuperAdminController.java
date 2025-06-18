@@ -23,8 +23,8 @@ public class SuperAdminController {
 
     // Endpoint's for super admin role ----------------------
 
-    // To create an endpoint that allows invoking the method
-    // 'getAllUsersWithRoleUser'.
+    // To create an endpoint that allows invoking the 
+    // 'getAllUsersWithRoleUser' method.
     @GetMapping("/users-and-admins")
     public ResponseEntity<?> getUsersAndAdmins() {
         return ResponseEntity.ok(service.getAllUsersWithRoleUserAndAdmin());
@@ -38,7 +38,7 @@ public class SuperAdminController {
         // If the user to remove the admin role is a user with the super admin
         // role, then do not allow that operation.
         if (service.isSuperAdmin(userId)) {
-            // Else returns code response 404
+            // Else, return a 404 status code.
             return ResponseEntity.notFound().build();
         }
 
@@ -49,19 +49,20 @@ public class SuperAdminController {
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(service.convertUserIntoAdmin(optionalUser.get()));
         }
-        // Else returns code response 404
+
+        // Else, return a 404 status code.
         return ResponseEntity.notFound().build();
     }
 
-    // To create an endpoint that allows invoking the method
-    // 'enableUser'.
+    // To create an endpoint that allows invoking the
+    // 'enableUser' method.
     @PatchMapping("/enabled-user/{userId}")
     public ResponseEntity<?> superAdminEnableUser(@PathVariable Long userId) {
 
         // If the user to remove the admin role is a user with the super admin
         // role, then do not allow that operation.
         if (service.isSuperAdmin(userId)) {
-            // Else returns code response 404
+            // Else, return a 404 status code.
             return ResponseEntity.notFound().build();
         }
 
@@ -71,7 +72,8 @@ public class SuperAdminController {
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(service.enabledUser(optionalUser.get()));
         }
-        // Else returns code response 404
+        
+        // Else, return a 404 status code.
         return ResponseEntity.notFound().build();
     }
 

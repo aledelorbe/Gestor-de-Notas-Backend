@@ -36,19 +36,30 @@ public class AdminServiceImp implements AdminService {
         return repository.getUserWithRoleUser(id);
     }
 
-    // To enable or disable a specific 'user'
+    // To enable or disable a certain user
     @Override
     @Transactional
-    public User enabledUser(User userDb) {
+    public Optional<User> disableEnableUser(Long userId) {
 
-        // If the user is enabled then disable it
-        if (userDb.isEnabled()) {
-            userDb.setEnabled(false);
-        } else {
-            userDb.setEnabled(true);
+        // Search for a specific user
+        Optional<User> optionalUser = repository.findById(userId);
+
+        // If it's present then...
+        if (optionalUser.isPresent()) {
+
+            User userDb = optionalUser.get();
+            
+            // If the user is enabled then disable it
+            if (userDb.isEnabled()) {
+                userDb.setEnabled(false);
+            } else {
+                userDb.setEnabled(true);
+            }
+
+            return Optional.of(repository.save(userDb));
         }
 
-        return repository.save(userDb);
+        return optionalUser;
     }
 
 }
