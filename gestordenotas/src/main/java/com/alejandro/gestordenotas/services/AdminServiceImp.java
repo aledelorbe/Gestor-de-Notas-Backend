@@ -62,4 +62,13 @@ public class AdminServiceImp implements AdminService {
         return optionalUser;
     }
 
+    // Methods aux ----------------------------------
+    
+    // To get all of the id's of users with role 'admin' and 'super admin'
+    @Override
+    @Transactional(readOnly = true)
+    public List<Long> getAllIdWithRoleAdminAndSuperAdmin() {
+        return repository.getAllIdWithRoleAdminAndSuperAdmin();
+    }
+
 }

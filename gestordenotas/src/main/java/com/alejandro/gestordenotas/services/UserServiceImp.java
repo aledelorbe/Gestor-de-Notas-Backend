@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alejandro.gestordenotas.dto.UserDto;
-import com.alejandro.gestordenotas.entities.Note;
 import com.alejandro.gestordenotas.entities.Role;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.repositories.RoleRepository;
@@ -93,7 +91,7 @@ public class UserServiceImp implements UserService {
             userDb.setUsername(user.getUsername());
             userDb.setPassword(passwordEncoder.encode(user.getPassword()));
 
-            return Optional.ofNullable(repository.save(userDb));
+            return Optional.of(repository.save(userDb));
         }
 
         return optionalUser;
@@ -114,75 +112,9 @@ public class UserServiceImp implements UserService {
         return optionalUser;
     }
 
-    // To convert a specific user into an admin user
-    @Override
-    @Transactional
-    public User convertUserIntoAdmin(User userDb) {
-        // Find the specific role
-        Optional<Role> optionalRole = roleRepository.findByName("ROLE_ADMIN");
-
-        // If the role is present then...
-        if (optionalRole.isPresent()) {
-
-            boolean hasRole = userDb.getRoles().stream().filter(role -> "ROLE_ADMIN".equals(role.getName())).findFirst()
-                    .isPresent();
-
-            if (hasRole) {
-                // remove this role to this user and set with value false the attribute admin
-                userDb.getRoles().remove(optionalRole.get());
-                userDb.setAdmin(false);
-            } else {
-                // add this role to this user and set with value true the attribute admin
-                userDb.getRoles().add(optionalRole.get());
-                userDb.setAdmin(true);
-            }
-        }
-
-        return repository.save(userDb);
-    }
-
-    // Methods for super admin role -----------------
-
-    // To get all of the users with the role 'user'
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserDto> getAllUsersWithRoleUserAndAdmin() {
-        return repository.getAllUsersWithRoleUserAndAdmin();
-    }
-
-    // Methods aux ----------------------------------
-    
-    // To get all of the id's of users with role 'admin' and 'super admin'
-    @Override
-    @Transactional(readOnly = true)
-    public List<Long> getAllIdWithRoleAdminAndSuperAdmin() {
-        return repository.getAllIdWithRoleAdminAndSuperAdmin();
-    }
-    
-    // To know if the user ID is the same as the super admin ID
-    @Override
-    @Transactional(readOnly = true)
-    public boolean isSuperAdmin(Long id) {
-
-        boolean result = false;
-
-        if (id == repository.getIdOfSuperAdmin()) {
-            result = true;
-        }
-
-        return result;
-    }
-
     // -----------------------------
     // Methods for custom queries of user entity
     // -----------------------------
-
-    // To get all the pets of certain user
-    @Override
-    @Transactional(readOnly = true)
-    public List<Note> getNotesByUserId(Long id_user) {
-        return repository.getNotesByUserId(id_user);
-    }
 
     // To get a certain user based on its username
     @Override

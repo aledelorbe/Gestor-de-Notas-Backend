@@ -6,22 +6,20 @@ import java.util.Optional;
 import com.alejandro.gestordenotas.dto.UserDto;
 import com.alejandro.gestordenotas.entities.User;
 
-public interface AdminService {
+public interface SuperAdminService {
 
     // Declaration of methods to use in 'serviceImp' file
 
     // -----------------------------
-    // Methods for the admin role
+    // Methods for the super admin role
     // -----------------------------
- 
-    List<UserDto> getAllUsersWithRoleUser();
-
-    Optional<UserDto> getUserWithRoleUser(Long id);
-
-    Optional<User> disableEnableUser(Long userId);
+    
+    List<UserDto> getAllUsersWithRoleUserAndAdmin();
+    
+    Optional<User> addRemoveAdminRoleFromUser(Long id);
 
     // Methods aux
-    
-    List<Long> getAllIdWithRoleAdminAndSuperAdmin();
+
+    boolean isSuperAdmin(Long id);
 
 }

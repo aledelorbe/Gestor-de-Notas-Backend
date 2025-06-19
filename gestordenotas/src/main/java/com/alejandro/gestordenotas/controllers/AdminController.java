@@ -79,12 +79,11 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    // To create an endpoint that allows invoking the
-    // 'disableEnableUser' method.
+    // To create an endpoint that allows invoking the 'disableEnableUser' method.
     @PatchMapping("/user/{userId}")
     public ResponseEntity<?> disableEnableUser(@PathVariable Long userId) {
 
-        List<Long> ids = userService.getAllIdWithRoleAdminAndSuperAdmin();
+        List<Long> ids = service.getAllIdWithRoleAdminAndSuperAdmin();
 
         // If the list of IDs contains the 'userId', it means that the admin is 
         // trying to disable a user with the role of admin or super admin.
