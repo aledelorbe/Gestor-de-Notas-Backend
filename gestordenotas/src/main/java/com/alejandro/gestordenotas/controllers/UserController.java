@@ -1,7 +1,6 @@
 package com.alejandro.gestordenotas.controllers;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +43,6 @@ public class UserController {
 
     // Endpoints for user role ----------------------
 
-    // To create an endpoint that allows invoking the method findAll.
-    @GetMapping()
-    public List<User> users() {
-        return service.findAll();
-    }
-
     // To create an endpoint that allows invoking the method findById.
     @GetMapping("/{id}")
     public ResponseEntity<?> user(@PathVariable Long id, Principal principal) {
@@ -71,7 +64,7 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    // To create an endpoint that allows invoking the method save user, but the user
+    // To create an endpoint that allows invoking the 'saveUser' method, but the user
     // will not become an admin
     // The annotation called 'RequestBody' allows receiving data of a user
     @PostMapping("/register")

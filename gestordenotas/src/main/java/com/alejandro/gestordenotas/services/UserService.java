@@ -1,6 +1,5 @@
 package com.alejandro.gestordenotas.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.alejandro.gestordenotas.entities.User;
@@ -13,8 +12,6 @@ public interface UserService {
     // Methods for the user role
     // -----------------------------
 
-    List<User> findAll();
-    
     Optional<User> findById(Long id);
     
     User save(User user);

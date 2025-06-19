@@ -40,15 +40,13 @@ public class AdminController {
     
     // Endpoint's for the admin role ----------------------
     
-    // To create an endpoint that allows invoking the 
-    // 'getAllUsersWithRoleUser' method.
+    // To create an endpoint that allows invoking the 'getAllUsersWithRoleUser' method.
     @GetMapping("/users")
     public ResponseEntity<?> getUsersWithRoleUser() {
         return ResponseEntity.ok(service.getAllUsersWithRoleUser());
     }
     
-    // To create an endpoint that allows invoking the
-    // 'getUserWithRoleUser' method.
+    // To create an endpoint that allows invoking the 'getUserWithRoleUser' method.
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserWithRoleUser(@PathVariable Long userId) {
 

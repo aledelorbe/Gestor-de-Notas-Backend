@@ -1,7 +1,6 @@
 package com.alejandro.gestordenotas.services;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -34,13 +33,6 @@ public class UserServiceImp implements UserService {
     // -----------------------------
     // Methods for user entity
     // -----------------------------
-
-    // To list all of users (records) in the table 'users'
-    @Override
-    @Transactional(readOnly = true)
-    public List<User> findAll() {
-        return (List<User>) repository.findAll(); // cast because the method findAll returns an iterable.
-    }
 
     // To get a specific user based on its id
     @Override

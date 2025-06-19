@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alejandro.gestordenotas.dto.UserDto;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.services.AdminService;
 import com.alejandro.gestordenotas.services.SuperAdminService;
@@ -32,6 +33,21 @@ public class SuperAdminController {
     @GetMapping("/users-and-admins")
     public ResponseEntity<?> getUsersAndAdmins() {
         return ResponseEntity.ok(service.getAllUsersWithRoleUserAndAdmin());
+    }
+
+    // To create an endpoint that allows invoking the 'getUserWithRoleUserAndAdmin' method.
+    @GetMapping("/user-and-admin/{userId}")
+    public ResponseEntity<?> getUserWithRoleUserAndAdmin(@PathVariable Long userId) {
+
+        // Search for a specific user and if it's present then return it.
+        Optional<UserDto> optionalUser = service.getUserWithRoleUserAndAdmin(userId);
+
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.ok(optionalUser.orElseThrow());
+        }
+
+        // Else, return a 404 status code.
+        return ResponseEntity.notFound().build();
     }
 
     // To create an endpoint that allows converting a user into an administrator

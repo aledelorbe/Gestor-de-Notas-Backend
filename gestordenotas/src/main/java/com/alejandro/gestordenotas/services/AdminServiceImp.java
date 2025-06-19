@@ -29,7 +29,7 @@ public class AdminServiceImp implements AdminService {
         return repository.getAllUsersWithRoleUser();
     }
 
-    // To get all of the users with the role 'user'
+    // To get a specific user with the user role based on their user ID
     @Override
     @Transactional(readOnly = true)
     public Optional<UserDto> getUserWithRoleUser(Long id) {

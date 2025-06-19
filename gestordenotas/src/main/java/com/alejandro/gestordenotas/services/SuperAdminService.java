@@ -15,6 +15,8 @@ public interface SuperAdminService {
     // -----------------------------
     
     List<UserDto> getAllUsersWithRoleUserAndAdmin();
+
+    Optional<UserDto> getUserWithRoleUserAndAdmin(Long id);
     
     Optional<User> addRemoveAdminRoleFromUser(Long id);
 

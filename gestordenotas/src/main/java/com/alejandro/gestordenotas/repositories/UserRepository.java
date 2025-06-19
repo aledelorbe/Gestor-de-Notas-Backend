@@ -31,7 +31,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     """)
     List<UserDto> getAllUsersWithRoleUser();
     
-    // To get a specific user who only have the role called 'user' 
+    // To get a specific user who only has the role called 'user' 
     @Query("""
         SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.UserDto(u.id, u.username, u.enabled)
         FROM User u
@@ -56,6 +56,19 @@ public interface UserRepository extends CrudRepository<User, Long> {
         )
     """)
     List<UserDto> getAllUsersWithRoleUserAndAdmin();
+
+    // To get a specific user who has the user role or the user and admin role
+    @Query("""
+        SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.AdminDto(u.id, u.username, u.enabled, u.admin)
+        FROM User u
+        WHERE u.id NOT IN (
+            SELECT DISTINCT u2.id
+            FROM User u2
+            JOIN u2.roles r
+            WHERE r.id = 3
+        ) and u.id = ?1
+    """)
+    Optional<UserDto> getUserWithRoleUserAndAdmin(Long id);
 
     // To get all of the id's of users with role 'admin' and 'super admin'
     @Query("""

@@ -35,6 +35,13 @@ public class SuperAdminServiceImp implements SuperAdminService {
         return repository.getAllUsersWithRoleUserAndAdmin();
     }
 
+    // To get a specific user with the user role based on their user ID
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<UserDto> getUserWithRoleUserAndAdmin(Long id) {
+        return repository.getUserWithRoleUserAndAdmin(id);
+    }
+
     // To convert a specific user into an admin user
     @Override
     @Transactional
