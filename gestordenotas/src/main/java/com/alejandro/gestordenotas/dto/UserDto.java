@@ -1,17 +1,18 @@
 package com.alejandro.gestordenotas.dto;
 
+// To create objects that can see the users with the user role
 public class UserDto {
 
     protected Long id;
 
     protected String username;
 
-    protected boolean enabled;
+    public UserDto() {
+    }
 
-    public UserDto(Long id, String username, boolean enabled) {
+    public UserDto(Long id, String username) {
         this.id = id;
         this.username = username;
-        this.enabled = enabled;
     }
 
     public Long getId() {
@@ -28,14 +29,6 @@ public class UserDto {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
     
 }

@@ -9,7 +9,7 @@ import com.alejandro.gestordenotas.entities.User;
 // The class that contains the data to be mocked in the service and controller methods
 public class UserData {
     
-    public static final List<Long> idsValid = Arrays.asList(1L, 2L, 3L, 4L, 5L);
+    public static final List<Long> idsValid = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L);
 
     public static User createUser001() {
         return new User(idsValid.get(0), "alejandro", "ale123", true, true, NoteData.createNotes001(), RoleData.createRoles003());
@@ -32,7 +32,7 @@ public class UserData {
     }
 
     public static User createUser006() {
-        return new User(idsValid.get(4), "rayas", "rayas123", false, false, NoteData.createNotes005(), RoleData.createRoles001());
+        return new User(idsValid.get(5), "pancha", "pancha123", false, false, NoteData.createNotes005(), RoleData.createRoles001());
     }
 
 }

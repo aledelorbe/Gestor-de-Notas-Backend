@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alejandro.gestordenotas.dto.UserDto;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.security.Access;
 import com.alejandro.gestordenotas.services.UserService;
@@ -57,7 +58,11 @@ public class UserController {
         Optional<User> optionalUser = service.findById(id);
 
         if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(optionalUser.orElseThrow());
+            UserDto userDto = new UserDto();
+            userDto.setId(optionalUser.get().getId());
+            userDto.setUsername(optionalUser.get().getUsername());
+
+            return ResponseEntity.ok(userDto);
         }
 
         // Else, return a 404 status code.
