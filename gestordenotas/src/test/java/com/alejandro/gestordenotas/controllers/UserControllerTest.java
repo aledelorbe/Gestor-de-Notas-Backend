@@ -2,31 +2,34 @@ package com.alejandro.gestordenotas.controllers;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.junit.jupiter.api.Test;
 
+import com.alejandro.gestordenotas.TestConfig;
+import com.alejandro.gestordenotas.data.CustomCondition;
 import com.alejandro.gestordenotas.data.UserData;
 import com.alejandro.gestordenotas.dto.UserDto;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 @WebMvcTest(UserController.class)
+@Import(TestConfig.class)
 public class UserControllerTest {
     
     // To inject the dependency that allows for mocking HTTP requests
@@ -83,8 +86,8 @@ public class UserControllerTest {
         mockMvc.perform(get("/api/users/" + idToSearch))
         
         // Then
-        .andExpect(status().isNotFound())
-        .andExpect(content().string(""))
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(""))
         ;
 
         verify(service).findById(argThat(new CustomCondition(UserData.idsValid, false)));
@@ -95,7 +98,7 @@ public class UserControllerTest {
     void postSaveTest() throws Exception {
 
         // Given
-        User userInsert = new User(null, "ben", "tennison", "be123@gmail.com", 1238977020L, null, null);
+        User userInsert = new User(null, "ben", "ben123");
         when(service.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
         
         // when
@@ -105,21 +108,15 @@ public class UserControllerTest {
 
         // then
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.name").value("ben"))
-            .andExpect(jsonPath("$.lastname").value("tennison"))
-            .andExpect(jsonPath("$.email").value("be123@gmail.com"))
-            .andExpect(jsonPath("$.phonenumber").value(1238977020L))
+            .andExpect(jsonPath("$.username").value("ben"))
             .andReturn()
-            ;
+        ;
 
         // Convert the response to an object
         String jsonString = result.getResponse().getContentAsString();
-        User newUser = objectMapper.readValue(jsonString, User.class);
+        UserDto newUser = objectMapper.readValue(jsonString, UserDto.class);
 
-        assertEquals("ben", newUser.getName());
-        assertEquals("tennison", newUser.getLastname());
-        assertEquals("be123@gmail.com", newUser.getEmail());
-        assertEquals(1238977020L, newUser.getPhonenumber());
+        assertEquals("ben", newUser.getUsername());
 
         verify(service).save(any(User.class));
     }
@@ -130,7 +127,7 @@ public class UserControllerTest {
     
         // Given
         Long idToUpdate = 2L;
-        User userToUpdate = new User(null, "wen", "tennison", "wen456@gmail.com", 4568977020L, null, null);
+        User userToUpdate = new User(null, "wen", "wen123");
         when(service.update(anyLong(), any(User.class))).thenAnswer(invocation -> Optional.of(invocation.getArgument(1)));
 
         // When
@@ -140,21 +137,17 @@ public class UserControllerTest {
 
         // then
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.name").value("wen"))
-            .andExpect(jsonPath("$.lastname").value("tennison"))
-            .andExpect(jsonPath("$.email").value("wen456@gmail.com"))
-            .andExpect(jsonPath("$.phonenumber").value(4568977020L))
+            .andExpect(jsonPath("$.id").value(2L))
+            .andExpect(jsonPath("$.username").value("wen"))
             .andReturn()
-            ;
+        ;
 
         // Convert the response to an object
         String jsonString = result.getResponse().getContentAsString();
-        User newUser = objectMapper.readValue(jsonString, User.class);
+        UserDto newUser = objectMapper.readValue(jsonString, UserDto.class);
 
-        assertEquals("wen", newUser.getName());
-        assertEquals("tennison", newUser.getLastname());
-        assertEquals("wen456@gmail.com", newUser.getEmail());
-        assertEquals(4568977020L, newUser.getPhonenumber());
+        assertEquals(2L, newUser.getId());
+        assertEquals("wen", newUser.getUsername());
 
         verify(service).update(argThat(new CustomCondition(UserData.idsValid, true)), any(User.class));
     }
@@ -165,7 +158,7 @@ public class UserControllerTest {
     
         // Given
         Long idToUpdate = 8L;
-        User userToUpdate = new User(null, "wen", "tennison", "wen456@gmail.com", 4568977020L, null, null);
+        User userToUpdate = new User(null, "wen", "wen123");
         when(service.update(anyLong(), any(User.class))).thenReturn(Optional.empty());
 
         // When
@@ -176,7 +169,7 @@ public class UserControllerTest {
         // then
             .andExpect(status().isNotFound())
             .andExpect(content().string(""))
-            ;
+        ;
 
         verify(service).update(argThat(new CustomCondition(UserData.idsValid, false)), any(User.class));
     }
@@ -194,21 +187,17 @@ public class UserControllerTest {
 
         // then
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("Alejandro"))
-            .andExpect(jsonPath("$.lastname").value("Granados"))
-            .andExpect(jsonPath("$.email").value("alejandro.magb@gmail.com"))
-            .andExpect(jsonPath("$.phonenumber").value(1538977020L))
+            .andExpect(jsonPath("$.id").value(1L))
+            .andExpect(jsonPath("$.name").value("alejandro"))
             .andReturn()
-            ;
+        ;
 
         // Convert the response to an object
         String jsonString = result.getResponse().getContentAsString();
         User newUser = objectMapper.readValue(jsonString, User.class);
 
-        assertEquals("Alejandro", newUser.getName());
-        assertEquals("Granados", newUser.getLastname());
-        assertEquals("alejandro.magb@gmail.com", newUser.getEmail());
-        assertEquals(1538977020L, newUser.getPhonenumber());
+        assertEquals(1L, newUser.getId());
+        assertEquals("alejandro", newUser.getUsername());
 
         verify(service).deleteById(argThat(new CustomCondition(UserData.idsValid, true)));
     }
@@ -237,7 +226,7 @@ public class UserControllerTest {
     void validationTest() throws Exception {
 
         // Given
-        User userInsert = new User(null, "", "", "wen456_gmai", 12345L, null, null);
+        User userInsert = new User(null, "", "");
         
         // when
         mockMvc.perform(post("/api/users")
@@ -246,11 +235,9 @@ public class UserControllerTest {
         
         // then
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.name").value("El campo name must not be blank"))
-            .andExpect(jsonPath("$.lastname").value("El campo lastname must not be blank"))
-            .andExpect(jsonPath("$.email").value("El campo email must be a well-formed email address"))
-            .andExpect(jsonPath("$.phonenumber").value("El campo phonenumber deben ser 10 digitos"))
-            ;
+            .andExpect(jsonPath("$.username").value("El campo username must not be blank"))
+            .andExpect(jsonPath("$.password").value("El campo password must not be blank"))
+        ;
 
         verify(service, never()).save(any(User.class));
     }

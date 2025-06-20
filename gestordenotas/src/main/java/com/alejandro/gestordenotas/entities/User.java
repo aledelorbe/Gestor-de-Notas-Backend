@@ -65,6 +65,12 @@ public class User {
         this.roles = new HashSet<>();
     }
 
+    public User(Long id, @NotBlank String username, @NotBlank String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
     public User(Long id, @NotBlank String username, @NotBlank String password, boolean admin, boolean enabled,
             List<Note> notes, Set<Role> roles) {
         this.id = id;

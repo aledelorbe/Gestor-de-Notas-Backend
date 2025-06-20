@@ -82,7 +82,12 @@ public class UserController {
         user.setAdmin(false);
         // When a new user is created to respond return the same user
         User newUser = service.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+
+        UserDto userDto = new UserDto();
+        userDto.setId(newUser.getId());
+        userDto.setUsername(newUser.getUsername());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
     // To create an endpoint that allows updating all of the values
@@ -105,7 +110,11 @@ public class UserController {
         Optional<User> optionalUser = service.update(id, user);
 
         if (optionalUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(optionalUser.orElseThrow());
+            UserDto userDto = new UserDto();
+            userDto.setId(optionalUser.get().getId());
+            userDto.setUsername(optionalUser.get().getUsername());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
         }
 
         // Else, return a 404 status code.
@@ -125,9 +134,12 @@ public class UserController {
         // Find specific user and if it's present then return specific user
         Optional<User> optionalUser = service.deleteById(id);
 
-        // Todo: when the object user has a jsonIgnore
         if (optionalUser.isPresent()) {
-            return ResponseEntity.ok().build();
+            UserDto userDto = new UserDto();
+            userDto.setId(optionalUser.get().getId());
+            userDto.setUsername(optionalUser.get().getUsername());
+
+            return ResponseEntity.ok(userDto);
         }
 
         // Else, return a 404 status code.
