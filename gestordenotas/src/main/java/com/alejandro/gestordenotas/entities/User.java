@@ -8,8 +8,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,6 +63,17 @@ public class User {
     public User() {
         this.notes = new ArrayList<>();
         this.roles = new HashSet<>();
+    }
+
+    public User(Long id, @NotBlank String username, @NotBlank String password, boolean admin, boolean enabled,
+            List<Note> notes, Set<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.admin = admin;
+        this.enabled = enabled;
+        this.notes = notes;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -130,7 +139,7 @@ public class User {
     @PrePersist
     public void prePersist() {
         this.enabled = true;
-        this.admin = false;
+        // this.admin = false;
     }
 
 }

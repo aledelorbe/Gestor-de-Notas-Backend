@@ -37,6 +37,11 @@ public class Note {
     public Note() {
     }
 
+    public Note(Long id, @NotBlank String content) {
+        this.id = id;
+        this.content = content;
+    }
+
     public Long getId() {
         return id;
     }
