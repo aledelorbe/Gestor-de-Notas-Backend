@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alejandro.gestordenotas.dto.UserDto;
 import com.alejandro.gestordenotas.entities.User;
-import com.alejandro.gestordenotas.security.Access;
 import com.alejandro.gestordenotas.services.UserService;
 import com.alejandro.gestordenotas.utils.UtilValidation;
 
@@ -35,9 +34,6 @@ public class UserController {
     @Autowired
     private UtilValidation utilValidation;
 
-    @Autowired
-    private Access access;
-
     // -----------------------------
     // Methods for user entity
     // -----------------------------
@@ -49,7 +45,7 @@ public class UserController {
     public ResponseEntity<?> user(@PathVariable Long id, Principal principal) {
 
         // Check if the user that wants to access the resource is the owner
-        if (!access.isOwner(id, principal)) {
+        if (!service.isOwner(id, principal)) {
             // return code response 404
             return ResponseEntity.notFound().build();
         }
@@ -101,7 +97,7 @@ public class UserController {
         }
 
         // Check if the user that wants to access the resource is the owner
-        if (!access.isOwner(id, principal)) {
+        if (!service.isOwner(id, principal)) {
             // return a 404 status code.
             return ResponseEntity.notFound().build();
         }
@@ -126,7 +122,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id, Principal principal) {
 
         // Check if the user that wants to access the resource is the owner
-        if (!access.isOwner(id, principal)) {
+        if (!service.isOwner(id, principal)) {
             // return code response 404
             return ResponseEntity.notFound().build();
         }

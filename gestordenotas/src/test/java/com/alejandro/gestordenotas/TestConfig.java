@@ -3,7 +3,6 @@ package com.alejandro.gestordenotas;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
-import com.alejandro.gestordenotas.security.Access;
 import com.alejandro.gestordenotas.utils.UtilValidation;
 
 
@@ -17,10 +16,13 @@ public class TestConfig {
         return new UtilValidation();
     }
 
-    // Create the component that represents the real Access class
-    @Bean
-    Access access() {
-        return new Access();
-    }
+    // // To disable security on tests
+    // @Bean
+    // SecurityFilterChain testSecurityFilterChain(HttpSecurity http) throws Exception {
+    //     http
+    //         .csrf(csrf -> csrf.disable())
+    //         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+    //     return http.build();
+    // }
 
 }

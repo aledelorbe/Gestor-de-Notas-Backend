@@ -8,10 +8,14 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -30,7 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(UserController.class)
 @Import(TestConfig.class)
-public class UserControllerTest {
+@AutoConfigureMockMvc(addFilters = false)
+class UserControllerTest {
     
     // To inject the dependency that allows for mocking HTTP requests
     @Autowired
@@ -50,10 +55,13 @@ public class UserControllerTest {
 
         // Given
         Long idToSearch = 5L;
-        when(service.findById(anyLong())).thenReturn(Optional.of(UserData.createUser002()));
+        String username = "rayas";
+        Principal principal = () -> username;
+        when(service.isOwner(anyLong(), any(Principal.class))).thenReturn(true);
+        when(service.findById(anyLong())).thenReturn(Optional.of(UserData.createUser005()));
 
         // When
-        MvcResult result = mockMvc.perform(get("/api/users/" + idToSearch))
+        MvcResult result = mockMvc.perform(get("/api/users/" + idToSearch).principal(principal)) 
 
         // Then
             .andExpect(status().isOk())
@@ -72,18 +80,22 @@ public class UserControllerTest {
         assertEquals("rayas", user.getUsername());
 
         verify(service).findById(argThat(new CustomCondition(UserData.idsValid, true)));
+        verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, true)), any(Principal.class));
     }
     
-    // To test the endpoint GetfindById with an inexisting id
+    // To test the 'GetfindById' endpoint with an inexisting id
     @Test
     void getfindByIdInexistingIdTest() throws Exception {
         
         // Given
         Long idToSearch = 999999L;
+        String username = "desconocido";
+        Principal principal = () -> username;
+        when(service.isOwner(anyLong(), any(Principal.class))).thenReturn(true);
         when(service.findById(anyLong())).thenReturn(Optional.empty());
         
         // When
-        mockMvc.perform(get("/api/users/" + idToSearch))
+        mockMvc.perform(get("/api/users/" + idToSearch).principal(principal)) 
         
         // Then
             .andExpect(status().isNotFound())
@@ -91,18 +103,44 @@ public class UserControllerTest {
         ;
 
         verify(service).findById(argThat(new CustomCondition(UserData.idsValid, false)));
+        verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, false)), any(Principal.class));
     }
 
-    // To test the endpoint save
+    // To test the 'GetfindById' endpoint when the user is not the owner
+    @Test
+    void getfindByIdNoOwnerTest() throws Exception {
+        
+        // Given
+        Long idToSearch = 999999L;
+        String username = "rayas";
+        Principal principal = () -> username;
+        when(service.isOwner(anyLong(), any(Principal.class))).thenReturn(false);
+        when(service.findById(anyLong())).thenReturn(Optional.empty());
+        
+        // When
+        mockMvc.perform(get("/api/users/" + idToSearch).principal(principal)) 
+        
+        // Then
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(""))
+        ;
+
+        verify(service, never()).findById(argThat(new CustomCondition(UserData.idsValid, false)));
+        verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, false)), any(Principal.class));
+    }
+
+    // To test the 'save' endpoint 
     @Test
     void postSaveTest() throws Exception {
 
         // Given
-        User userInsert = new User(null, "ben", "ben123");
+        Map<String, Object> userInsert = new HashMap<>();
+        userInsert.put("username", "ben");
+        userInsert.put("password", "ben123");
         when(service.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        
+
         // when
-        MvcResult result = mockMvc.perform(post("/api/users")
+        MvcResult result = mockMvc.perform(post("/api/users/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(userInsert)))
 
@@ -121,23 +159,28 @@ public class UserControllerTest {
         verify(service).save(any(User.class));
     }
 
-    // To test the endpoint update when we use an existing id 
+    // To test the 'update' endpoint when we use an existing id 
     @Test
     void putUpdateExistingIdTest() throws Exception {
     
         // Given
         Long idToUpdate = 2L;
-        User userToUpdate = new User(null, "wen", "wen123");
+        String username = "wen";
+        Principal principal = () -> username;
+        Map<String, Object> userToUpdate = new HashMap<>();
+        userToUpdate.put("username", username);
+        userToUpdate.put("password", "wen123");
+        when(service.isOwner(anyLong(), any(Principal.class))).thenReturn(true);
         when(service.update(anyLong(), any(User.class))).thenAnswer(invocation -> Optional.of(invocation.getArgument(1)));
 
         // When
         MvcResult result = mockMvc.perform(put("/api/users/" + idToUpdate)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(userToUpdate)))
+            .content(objectMapper.writeValueAsString(userToUpdate))
+            .principal(principal))
 
         // then
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").value(2L))
             .andExpect(jsonPath("$.username").value("wen"))
             .andReturn()
         ;
@@ -146,25 +189,31 @@ public class UserControllerTest {
         String jsonString = result.getResponse().getContentAsString();
         UserDto newUser = objectMapper.readValue(jsonString, UserDto.class);
 
-        assertEquals(2L, newUser.getId());
         assertEquals("wen", newUser.getUsername());
 
         verify(service).update(argThat(new CustomCondition(UserData.idsValid, true)), any(User.class));
+        verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, true)), any(Principal.class));
     }
 
-    // To test the endpoint update when we use an inexisting id 
+    // To test the 'update' endpoint when we use an inexisting id 
     @Test
     void putUpdateInexistingIdTest() throws Exception {
     
         // Given
         Long idToUpdate = 8L;
-        User userToUpdate = new User(null, "wen", "wen123");
+        String username = "desconocido";
+        Principal principal = () -> username;
+        Map<String, Object> userToUpdate = new HashMap<>();
+        userToUpdate.put("username", username);
+        userToUpdate.put("password", "wen123");
+        when(service.isOwner(anyLong(), any(Principal.class))).thenReturn(true);
         when(service.update(anyLong(), any(User.class))).thenReturn(Optional.empty());
 
         // When
         mockMvc.perform(put("/api/users/" + idToUpdate)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(userToUpdate)))
+            .content(objectMapper.writeValueAsString(userToUpdate))
+            .principal(principal))
 
         // then
             .andExpect(status().isNotFound())
@@ -172,53 +221,114 @@ public class UserControllerTest {
         ;
 
         verify(service).update(argThat(new CustomCondition(UserData.idsValid, false)), any(User.class));
+        verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, false)), any(Principal.class));
     }
 
-    // To test the endpoint delete when we use an existing id 
+    // To test the 'update' endpoint when the user is not the owner
+    @Test
+    void putUpdateNoOwnerTest() throws Exception {
+    
+        // Given
+        Long idToUpdate = 8L;
+        String username = "wen";
+        Principal principal = () -> username;
+        Map<String, Object> userToUpdate = new HashMap<>();
+        userToUpdate.put("username", username);
+        userToUpdate.put("password", "wen123");
+        when(service.isOwner(anyLong(), any(Principal.class))).thenReturn(false);
+        when(service.update(anyLong(), any(User.class))).thenReturn(Optional.empty());
+        
+        // When
+        mockMvc.perform(put("/api/users/" + idToUpdate)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(userToUpdate))
+            .principal(principal))
+        
+        // Then
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(""))
+        ;
+
+        verify(service, never()).findById(argThat(new CustomCondition(UserData.idsValid, false)));
+        verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, false)), any(Principal.class));
+    }
+
+    // To test the 'delete' endpoint when we use an existing id 
     @Test
     void deleteExistingIdTest() throws Exception {
     
         // Given
         Long idToDelete = 1L;
+        String username = "alejandro";
+        Principal principal = () -> username;
+        when(service.isOwner(anyLong(), any(Principal.class))).thenReturn(true);
         when(service.deleteById(anyLong())).thenReturn(Optional.of(UserData.createUser001()));
 
         // When
-        MvcResult result = mockMvc.perform(delete("/api/users/" + idToDelete))
+        MvcResult result = mockMvc.perform(delete("/api/users/" + idToDelete).principal(principal))
 
         // then
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(1L))
-            .andExpect(jsonPath("$.name").value("alejandro"))
+            .andExpect(jsonPath("$.username").value("alejandro"))
             .andReturn()
         ;
 
         // Convert the response to an object
         String jsonString = result.getResponse().getContentAsString();
-        User newUser = objectMapper.readValue(jsonString, User.class);
+        UserDto newUser = objectMapper.readValue(jsonString, UserDto.class);
 
         assertEquals(1L, newUser.getId());
         assertEquals("alejandro", newUser.getUsername());
 
         verify(service).deleteById(argThat(new CustomCondition(UserData.idsValid, true)));
+        verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, true)), any(Principal.class));
     }
 
-    // To test the endpoint delete when we use an inexisting id 
+    // To test the 'delete' endpoint when we use an inexisting id 
     @Test
     void deleteInexistingIdTest() throws Exception {
     
         // Given
         Long idToDelete = 99999L;
+        String username = "desconocido";
+        Principal principal = () -> username;
+        when(service.isOwner(anyLong(), any(Principal.class))).thenReturn(true);
         when(service.deleteById(anyLong())).thenReturn(Optional.empty());
 
         // When
-        mockMvc.perform(delete("/api/users/" + idToDelete))
+        mockMvc.perform(delete("/api/users/" + idToDelete).principal(principal))
 
         // then
             .andExpect(status().isNotFound())
             .andExpect(content().string(""))
-            ;
+        ;
 
         verify(service).deleteById(argThat(new CustomCondition(UserData.idsValid, false)));
+        verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, false)), any(Principal.class));
+    }
+
+    // To test the 'delete' endpoint when the user is not owner
+    @Test
+    void deleteNoOwnerTest() throws Exception {
+    
+        // Given
+        Long idToDelete = 1L;
+        String username = "alejandro";
+        Principal principal = () -> username;
+        when(service.isOwner(anyLong(), any(Principal.class))).thenReturn(false);
+        when(service.deleteById(anyLong())).thenReturn(Optional.of(UserData.createUser001()));
+
+        // When
+        mockMvc.perform(delete("/api/users/" + idToDelete).principal(principal))
+
+        // then
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(""))
+        ;
+
+        verify(service, never()).deleteById(argThat(new CustomCondition(UserData.idsValid, false)));
+        verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, true)), any(Principal.class));
     }
 
     // To test the method validation
@@ -226,10 +336,13 @@ public class UserControllerTest {
     void validationTest() throws Exception {
 
         // Given
-        User userInsert = new User(null, "", "");
-        
+        Map<String, Object> userInsert = new HashMap<>();
+        userInsert.put("username", "");
+        userInsert.put("password", "");
+        when(service.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         // when
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post("/api/users/register")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(userInsert)))
         
@@ -240,6 +353,7 @@ public class UserControllerTest {
         ;
 
         verify(service, never()).save(any(User.class));
+        verify(service, never()).isOwner(argThat(new CustomCondition(UserData.idsValid, true)), any(Principal.class));
     }
 
 }

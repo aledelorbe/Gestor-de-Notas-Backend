@@ -1,5 +1,6 @@
 package com.alejandro.gestordenotas.services;
 
+import java.security.Principal;
 import java.util.Optional;
 
 import com.alejandro.gestordenotas.entities.User;
@@ -19,6 +20,10 @@ public interface UserService {
     Optional<User> update(Long id, User user);
     
     Optional<User> deleteById(Long id);
+
+    // Aux Methods 
+
+    boolean isOwner(Long id, Principal principal);
 
     // -----------------------------
     // Methods for custom queries of the user entity

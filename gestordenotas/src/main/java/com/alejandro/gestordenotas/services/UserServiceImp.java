@@ -1,5 +1,6 @@
 package com.alejandro.gestordenotas.services;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -102,6 +103,31 @@ public class UserServiceImp implements UserService {
         });
 
         return optionalUser;
+    }
+
+    // Aux Methods ---------------------------------------------
+    
+    // To know if the user who wants to access the resource is the owner or not
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isOwner(Long id, Principal principal) {
+        boolean result = true;
+
+        // Get the username of the authenticated user
+        String authenticatedUsername = principal.getName();
+
+        // Check if the authenticated user is the owner of the resource
+        Optional<User> optionalUser1 = repository.findById(id);
+
+        if (optionalUser1.isPresent()) {
+            User userDb = optionalUser1.get();
+
+            if (!userDb.getUsername().equals(authenticatedUsername)) {
+                result = false;
+            }
+        }
+
+        return result;
     }
 
     // -----------------------------

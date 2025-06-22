@@ -18,9 +18,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
     // To get a user based on its name
     Optional<User> findByUsername(String username);
 
-    // To get all of the users with role 'users'
+    // To get all of the users with the user role
     @Query("""
-        SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.UserDto(u.id, u.username, u.enabled)
+        SELECT DISTINCT new com.alejandro.gestordenotas.dto.UserDto(u.id, u.username)
         FROM User u
         WHERE u.id NOT IN (
             SELECT DISTINCT u2.id
@@ -31,9 +31,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
     """)
     List<UserDto> getAllUsersWithRoleUser();
     
-    // To get a specific user who only has the role called 'user' 
+    // To get a specific user who only has the user role 
     @Query("""
-        SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.UserDto(u.id, u.username, u.enabled)
+        SELECT DISTINCT new com.alejandro.gestordenotas.dto.UserDto(u.id, u.username)
         FROM User u
         WHERE u.id NOT IN (
             SELECT DISTINCT u2.id
@@ -44,9 +44,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
     """)
     Optional<UserDto> getUserWithRoleUser(Long id);
     
-    // To get all of the users with role 'users' and role 'admin'
+    // To get all of the users who have the user role or the user and admin role
     @Query("""
-        SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.AdminDto(u.id, u.username, u.enabled, u.admin)
+        SELECT DISTINCT new com.alejandro.gestordenotas.dto.AdminDto(u.id, u.username, u.enabled)
         FROM User u
         WHERE u.id NOT IN (
             SELECT DISTINCT u2.id
@@ -59,7 +59,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     // To get a specific user who has the user role or the user and admin role
     @Query("""
-        SELECT DISTINCT new com.alejandro.gestordenotas.services.dto.AdminDto(u.id, u.username, u.enabled, u.admin)
+        SELECT DISTINCT new com.alejandro.gestordenotas.dto.AdminDto(u.id, u.username, u.enabled)
         FROM User u
         WHERE u.id NOT IN (
             SELECT DISTINCT u2.id

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alejandro.gestordenotas.entities.Note;
 import com.alejandro.gestordenotas.entities.User;
-import com.alejandro.gestordenotas.security.Access;
 import com.alejandro.gestordenotas.services.NoteService;
 import com.alejandro.gestordenotas.services.UserService;
 import com.alejandro.gestordenotas.utils.UtilValidation;
@@ -41,8 +40,6 @@ public class NoteController {
     @Autowired
     private UtilValidation utilValidation;
 
-    @Autowired
-    private Access access;
 
     // -----------------------------
     // Methods for note entity
@@ -53,7 +50,7 @@ public class NoteController {
     public ResponseEntity<?> getNotesByUserId(@PathVariable Long userId, Principal principal) {
 
         // Check if the user that wants to access the resource is the owner
-        if (!access.isOwner(userId, principal)) {
+        if (!userService.isOwner(userId, principal)) {
             // return a 404 status code.
             return ResponseEntity.notFound().build();
         }
@@ -103,7 +100,7 @@ public class NoteController {
         }
 
         // Check if the user that wants to access the resource is the owner
-        if (!access.isOwner(userId, principal)) {
+        if (!userService.isOwner(userId, principal)) {
             // return code response 404
             return ResponseEntity.notFound().build();
         }
@@ -126,7 +123,7 @@ public class NoteController {
             Principal principal) {
 
         // Check if the user that wants to access the resource is the owner
-        if (!access.isOwner(userId, principal)) {
+        if (!userService.isOwner(userId, principal)) {
             // return code response 404
             return ResponseEntity.notFound().build();
         }
