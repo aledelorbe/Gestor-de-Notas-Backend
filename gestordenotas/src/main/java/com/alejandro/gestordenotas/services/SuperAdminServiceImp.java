@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alejandro.gestordenotas.dto.UserDto;
+import com.alejandro.gestordenotas.dto.SuperAdminDto;
 import com.alejandro.gestordenotas.entities.Role;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.repositories.RoleRepository;
@@ -31,15 +31,15 @@ public class SuperAdminServiceImp implements SuperAdminService {
     // To get all of the users with the role 'user' and 'admin'
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> getAllUsersWithRoleUserAndAdmin() {
-        return repository.getAllUsersWithRoleUserAndAdmin();
+    public List<SuperAdminDto> getAllUsersWithUserAndAdminRole() {
+        return repository.getAllUsersWithUserAndAdminRole();
     }
 
     // To get a specific user with the user role based on their user ID
     @Override
     @Transactional(readOnly = true)
-    public Optional<UserDto> getUserWithRoleUserAndAdmin(Long id) {
-        return repository.getUserWithRoleUserAndAdmin(id);
+    public Optional<SuperAdminDto> getUserWithUserAndAdminRole(Long id) {
+        return repository.getUserWithUserAndAdminRole(id);
     }
 
     // To convert a specific user into an admin user

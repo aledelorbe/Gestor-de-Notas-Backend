@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alejandro.gestordenotas.dto.UserDto;
+import com.alejandro.gestordenotas.dto.AdminDto;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.repositories.UserRepository;
 
@@ -25,15 +25,15 @@ public class AdminServiceImp implements AdminService {
     // To get all of the users with the role 'user'
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> getAllUsersWithRoleUser() {
-        return repository.getAllUsersWithRoleUser();
+    public List<AdminDto> getAllUsersWithUserRole() {
+        return repository.getAllUsersWithUserRole();
     }
 
     // To get a specific user with the user role based on their user ID
     @Override
     @Transactional(readOnly = true)
-    public Optional<UserDto> getUserWithRoleUser(Long id) {
-        return repository.getUserWithRoleUser(id);
+    public Optional<AdminDto> getUserWithUserRole(Long id) {
+        return repository.getUserWithUserRole(id);
     }
 
     // To enable or disable a certain user
@@ -67,8 +67,8 @@ public class AdminServiceImp implements AdminService {
     // To get all of the id's of users with role 'admin' and 'super admin'
     @Override
     @Transactional(readOnly = true)
-    public List<Long> getAllIdWithRoleAdminAndSuperAdmin() {
-        return repository.getAllIdWithRoleAdminAndSuperAdmin();
+    public List<Long> getAllIdsWithAdminAndSuperAdminRole() {
+        return repository.getAllIdsWithAdminAndSuperAdminRole();
     }
 
 }

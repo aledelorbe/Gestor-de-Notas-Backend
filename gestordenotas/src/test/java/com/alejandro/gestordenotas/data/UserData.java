@@ -11,6 +11,8 @@ public class UserData {
     
     public static final List<Long> idsValid = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L);
 
+    public static final List<Long> userIdsWithAdminOrSuperAdminRole = Arrays.asList(idsValid.get(0), idsValid.get(1), idsValid.get(2));
+
     public static User createUser001() {
         return new User(idsValid.get(0), "alejandro", "ale123", true, true, NoteData.createNotes001(), RoleData.createRoles003());
     }

@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alejandro.gestordenotas.dto.UserDto;
+import com.alejandro.gestordenotas.dto.AdminDto;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.services.AdminService;
 import com.alejandro.gestordenotas.services.UserService;
 import com.alejandro.gestordenotas.utils.UtilValidation;
 
 import jakarta.validation.Valid;
+
 
 @RestController // To create a api rest.
 @RequestMapping("/api/admins") // To create a base path.
@@ -40,18 +41,18 @@ public class AdminController {
     
     // Endpoint's for the admin role ----------------------
     
-    // To create an endpoint that allows invoking the 'getAllUsersWithRoleUser' method.
+    // To create an endpoint that allows invoking the 'getAllUsersWithUserRole' method.
     @GetMapping("/users")
-    public ResponseEntity<?> getUsersWithRoleUser() {
-        return ResponseEntity.ok(service.getAllUsersWithRoleUser());
+    public ResponseEntity<?> getAllUsersWithUserRole() {
+        return ResponseEntity.ok(service.getAllUsersWithUserRole());
     }
     
-    // To create an endpoint that allows invoking the 'getUserWithRoleUser' method.
+    // To create an endpoint that allows invoking the 'getUserWithUserRole' method.
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserWithRoleUser(@PathVariable Long userId) {
+    public ResponseEntity<?> getUserWithUserRole(@PathVariable Long userId) {
 
         // Search for a specific user and if it's present then return it.
-        Optional<UserDto> optionalUser = service.getUserWithRoleUser(userId);
+        Optional<AdminDto> optionalUser = service.getUserWithUserRole(userId);
 
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(optionalUser.orElseThrow());
@@ -81,7 +82,7 @@ public class AdminController {
     @PatchMapping("/user/{userId}")
     public ResponseEntity<?> disableEnableUser(@PathVariable Long userId) {
 
-        List<Long> ids = service.getAllIdWithRoleAdminAndSuperAdmin();
+        List<Long> ids = service.getAllIdsWithAdminAndSuperAdminRole();
 
         // If the list of IDs contains the 'userId', it means that the admin is 
         // trying to disable a user with the role of admin or super admin.
@@ -94,7 +95,9 @@ public class AdminController {
 
         // If the user is present, it means the operation to disable or enable the user was successful.
         if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(optionalUser.get());
+            User user = optionalUser.get();
+            AdminDto adminDto = new AdminDto(user.getId(), user.getUsername(), user.isEnabled());
+            return ResponseEntity.ok(adminDto);
         }
         
         // Else, return a 404 status code.

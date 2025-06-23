@@ -331,7 +331,7 @@ class UserControllerTest {
         verify(service).isOwner(argThat(new CustomCondition(UserData.idsValid, true)), any(Principal.class));
     }
 
-    // To test the method validation
+    // To test the 'validation' method
     @Test
     void validationTest() throws Exception {
 

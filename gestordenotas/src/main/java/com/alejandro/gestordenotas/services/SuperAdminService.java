@@ -3,8 +3,9 @@ package com.alejandro.gestordenotas.services;
 import java.util.List;
 import java.util.Optional;
 
-import com.alejandro.gestordenotas.dto.UserDto;
+import com.alejandro.gestordenotas.dto.SuperAdminDto;
 import com.alejandro.gestordenotas.entities.User;
+
 
 public interface SuperAdminService {
 
@@ -14,9 +15,9 @@ public interface SuperAdminService {
     // Methods for the super admin role
     // -----------------------------
     
-    List<UserDto> getAllUsersWithRoleUserAndAdmin();
+    List<SuperAdminDto> getAllUsersWithUserAndAdminRole();
 
-    Optional<UserDto> getUserWithRoleUserAndAdmin(Long id);
+    Optional<SuperAdminDto> getUserWithUserAndAdminRole(Long id);
     
     Optional<User> addRemoveAdminRoleFromUser(Long id);
 

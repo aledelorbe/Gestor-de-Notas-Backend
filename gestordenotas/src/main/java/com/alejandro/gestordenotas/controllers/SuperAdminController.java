@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alejandro.gestordenotas.dto.UserDto;
+import com.alejandro.gestordenotas.dto.SuperAdminDto;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.services.AdminService;
 import com.alejandro.gestordenotas.services.SuperAdminService;
@@ -29,18 +29,18 @@ public class SuperAdminController {
 
     // Endpoint's for super admin role ----------------------
 
-    // To create an endpoint that allows invoking the 'getAllUsersWithRoleUser' method.
+    // To create an endpoint that allows invoking the 'getAllUsersWithUserAndAdminRole' method.
     @GetMapping("/users-and-admins")
-    public ResponseEntity<?> getUsersAndAdmins() {
-        return ResponseEntity.ok(service.getAllUsersWithRoleUserAndAdmin());
+    public ResponseEntity<?> getAllUsersWithUserAndAdminRole() {
+        return ResponseEntity.ok(service.getAllUsersWithUserAndAdminRole());
     }
 
-    // To create an endpoint that allows invoking the 'getUserWithRoleUserAndAdmin' method.
+    // To create an endpoint that allows invoking the 'getUserWithUserAndAdminRole' method.
     @GetMapping("/user-and-admin/{userId}")
-    public ResponseEntity<?> getUserWithRoleUserAndAdmin(@PathVariable Long userId) {
+    public ResponseEntity<?> getUserWithUserAndAdminRole(@PathVariable Long userId) {
 
         // Search for a specific user and if it's present then return it.
-        Optional<UserDto> optionalUser = service.getUserWithRoleUserAndAdmin(userId);
+        Optional<SuperAdminDto> optionalUser = service.getUserWithUserAndAdminRole(userId);
 
         if (optionalUser.isPresent()) {
             return ResponseEntity.ok(optionalUser.orElseThrow());
