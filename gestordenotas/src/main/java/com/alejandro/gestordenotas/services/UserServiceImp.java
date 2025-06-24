@@ -32,7 +32,7 @@ public class UserServiceImp implements UserService {
     private PasswordEncoder passwordEncoder;
 
     // -----------------------------
-    // Methods for user entity
+    // Methods for the user role
     // -----------------------------
 
     // To get a specific user based on its id

@@ -145,7 +145,6 @@ public class User {
     @PrePersist
     public void prePersist() {
         this.enabled = true;
-        // this.admin = false;
     }
 
 }
