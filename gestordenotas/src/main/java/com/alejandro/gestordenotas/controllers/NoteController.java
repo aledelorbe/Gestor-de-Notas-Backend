@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alejandro.gestordenotas.dto.UserDto;
 import com.alejandro.gestordenotas.entities.Note;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.services.NoteService;
@@ -76,12 +77,22 @@ public class NoteController {
             return utilValidation.validation(result);
         }
 
+        // Check if the user that wants to access the resource is the owner
+        if (!userService.isOwner(userId, principal)) {
+            // return a 404 status code.
+            return ResponseEntity.notFound().build();
+        }
+
         // Call the 'saveNoteByUser' method
         Optional<User> optionalNewUser = service.saveNoteByUser(userId, newNote);
 
         // if the user is present then it means that the object could be saved
         if (optionalNewUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(optionalNewUser.get());
+            UserDto userDto = new UserDto();
+            userDto.setId(optionalNewUser.get().getId());
+            userDto.setUsername(optionalNewUser.get().getUsername());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
         }
 
         // Else, return a 404 status code.
@@ -110,7 +121,11 @@ public class NoteController {
 
         // if the user is present then it means that the object could be updated
         if ( optionalUpdateUser.isPresent() ) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(optionalUpdateUser.get());
+            UserDto userDto = new UserDto();
+            userDto.setId(optionalUpdateUser.get().getId());
+            userDto.setUsername(optionalUpdateUser.get().getUsername());
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
         }
 
         // Else, return a 404 status code.
@@ -133,7 +148,11 @@ public class NoteController {
 
         // if the user is present then it means that the object could be deleted
         if ( optionalUpdateUser.isPresent() ) {
-            return ResponseEntity.status(HttpStatus.OK).body(optionalUpdateUser.get());
+            UserDto userDto = new UserDto();
+            userDto.setId(optionalUpdateUser.get().getId());
+            userDto.setUsername(optionalUpdateUser.get().getUsername());
+
+            return ResponseEntity.status(HttpStatus.OK).body(userDto);
         }
 
         // Else, return a 404 status code.
