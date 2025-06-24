@@ -8,7 +8,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -63,12 +62,10 @@ class AdminControllerTest {
         // Given
         Long idToSearch = 5L;
         AdminDto adminDto = new AdminDto(UserData.createUser005().getId(), UserData.createUser005().getUsername(), true);
-        String username = "rayas";
-        Principal principal = () -> username;
         when(service.getUserWithUserRole(anyLong())).thenReturn(Optional.of(adminDto));
 
         // When
-        MvcResult result = mockMvc.perform(get("/api/admins/user/" + idToSearch).principal(principal)) 
+        MvcResult result = mockMvc.perform(get("/api/admins/user/" + idToSearch)) 
 
         // Then
             .andExpect(status().isOk())
@@ -97,12 +94,10 @@ class AdminControllerTest {
         
         // Given
         Long idToSearch = 9999999L;
-        String username = "desconocido";
-        Principal principal = () -> username;
         when(service.getUserWithUserRole(anyLong())).thenReturn(Optional.empty());
 
         // When
-        mockMvc.perform(get("/api/admins/user/" + idToSearch).principal(principal)) 
+        mockMvc.perform(get("/api/admins/user/" + idToSearch)) 
         
         // Then
             .andExpect(status().isNotFound())

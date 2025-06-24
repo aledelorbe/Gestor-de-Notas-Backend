@@ -68,7 +68,9 @@ public class SuperAdminController {
         // If the user is present, it means the operation to add or remove 
         // the admin role from user was successful.
         if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(optionalUser.get());
+            User user = optionalUser.get();
+            SuperAdminDto superAdminDto = new SuperAdminDto(user.getId(), user.getUsername(), user.isEnabled(), user.isAdmin());
+            return ResponseEntity.ok(superAdminDto);
         }
 
         // Else, return a 404 status code.
@@ -90,7 +92,9 @@ public class SuperAdminController {
         Optional<User> optionalUser = adminService.disableEnableUser(userId);
 
         if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(optionalUser.get());
+            User user = optionalUser.get();
+            SuperAdminDto superAdminDto = new SuperAdminDto(user.getId(), user.getUsername(), user.isEnabled(), user.isAdmin());
+            return ResponseEntity.ok(superAdminDto);
         }
         
         // Else, return a 404 status code.
