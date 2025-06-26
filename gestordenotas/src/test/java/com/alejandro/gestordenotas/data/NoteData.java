@@ -1,5 +1,6 @@
 package com.alejandro.gestordenotas.data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,23 +52,23 @@ public class NoteData {
     }
 
     public static List<Note> createNotes001() {
-        return Arrays.asList(createNote001());
+        return new ArrayList<>(Arrays.asList(createNote001()));
     }
 
     public static List<Note> createNotes002() {
-        return Arrays.asList(createNote002(), createNote003(), createNote004());
+        return new ArrayList<>(Arrays.asList(createNote002(), createNote003(), createNote004()));
     }
 
     public static List<Note> createNotes003() {
-        return Arrays.asList(createNote005(), createNote006());
+        return new ArrayList<>(Arrays.asList(createNote005(), createNote006()));
     }
 
     public static List<Note> createNotes004() {
-        return Arrays.asList(createNote007(), createNote008());
+        return new ArrayList<>(Arrays.asList(createNote007(), createNote008()));
     }
 
     public static List<Note> createNotes005() {
-        return Arrays.asList(createNote009(), createNote010());
+        return new ArrayList<>(Arrays.asList(createNote009(), createNote010()));
     }
     
 }
