@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
-import java.security.Principal;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -20,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.alejandro.gestordenotas.data.UserData;
 import com.alejandro.gestordenotas.data.CustomCondition;
 import com.alejandro.gestordenotas.entities.User;
-import com.alejandro.gestordenotas.repositories.RoleRepository;
 import com.alejandro.gestordenotas.repositories.UserRepository;
 
 
@@ -31,16 +29,9 @@ class AdminServiceImpTest {
     @Mock
     UserRepository repository; 
 
-    // To create a mock
-    @Mock
-    RoleRepository roleRepository; 
-
     // To create a service object with the injection of a mock
     @InjectMocks
     AdminServiceImp service;
-
-    @Mock
-    Principal principal;
 
 
     // To test the 'disableEnableUser' method when the user was disabled

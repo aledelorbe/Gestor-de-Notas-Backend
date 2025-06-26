@@ -1,5 +1,6 @@
 package com.alejandro.gestordenotas.services;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import com.alejandro.gestordenotas.entities.Role;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.repositories.RoleRepository;
 import com.alejandro.gestordenotas.repositories.UserRepository;
+
 
 @Service
 public class SuperAdminServiceImp implements SuperAdminService {
@@ -71,9 +73,11 @@ public class SuperAdminServiceImp implements SuperAdminService {
                     userDb.getRoles().add(optionalRole.get());
                     userDb.setAdmin(true);
                 }
+
+                return Optional.of(repository.save(userDb));
             }
 
-            return Optional.of(repository.save(userDb));
+            return Optional.empty();
         }
 
         return optionalUser;
