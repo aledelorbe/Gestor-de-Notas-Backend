@@ -111,20 +111,16 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional(readOnly = true)
     public boolean isOwner(Long id, Principal principal) {
-        boolean result = true;
+        boolean result = false;
 
         // Get the username of the authenticated user
         String authenticatedUsername = principal.getName();
 
         // Check if the authenticated user is the owner of the resource
-        Optional<User> optionalUser1 = repository.findById(id);
+        Optional<User> optionalUser = repository.findById(id);
 
-        if (optionalUser1.isPresent()) {
-            User userDb = optionalUser1.get();
-
-            if (!userDb.getUsername().equals(authenticatedUsername)) {
-                result = false;
-            }
+        if (optionalUser.isPresent() && optionalUser.get().getUsername().equals(authenticatedUsername)) {
+            result = true;
         }
 
         return result;
