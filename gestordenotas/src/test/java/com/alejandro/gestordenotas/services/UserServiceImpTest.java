@@ -50,7 +50,7 @@ class UserServiceImpTest {
     PasswordEncoder passwordEncoder;
 
     
-    // To test the method findById when we use an existing id
+    // To test the 'findById' method when we use an existing id
     @Test
     void findByIdExistingIdTest() {
 
@@ -68,7 +68,7 @@ class UserServiceImpTest {
         verify(repository).findById(argThat(new CustomCondition(UserData.idsValid, true)));
     }
 
-    // To test the method findById when we use an inexisting id
+    // To test the 'findById' method when we use an inexisting id
     @Test
     void findByIdInexistingIdTest() {
 
@@ -141,7 +141,7 @@ class UserServiceImpTest {
         verify(repository).save(any(User.class));
     }
 
-    // To test the method update when we use an existing id
+    // To test the 'update' method when we use an existing id
     @Test
     void updateExistingIdTest() {
 
@@ -166,7 +166,7 @@ class UserServiceImpTest {
         verify(repository).save(any(User.class));
     }
 
-    // To test the method update when we use an inexisting id
+    // To test the 'update' method when we use an inexisting id
     @Test
     void updateInexistingIdTest() {
 
@@ -189,7 +189,7 @@ class UserServiceImpTest {
         verify(repository, never()).save(any(User.class));
     }
 
-    // To test the method delete when we use an existing id
+    // To test the 'delete' method when we use an existing id
     @Test
     void deleteExistingIdTest() {
 
@@ -209,7 +209,7 @@ class UserServiceImpTest {
         verify(repository).deleteById(argThat(new CustomCondition(UserData.idsValid, true)));
     }
 
-    // To test the method delete when we use an inexisting id
+    // To test the 'delete' method when we use an inexisting id
     @Test
     void deleteInexistingIdTest() {
 
