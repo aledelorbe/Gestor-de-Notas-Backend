@@ -43,9 +43,9 @@ class AdminServiceImpTest {
     Principal principal;
 
 
-    // To test the 'disableEnableUser' method when the user was enabled or disabled
+    // To test the 'disableEnableUser' method when the user was disabled
     @Test
-    void disableEnableUserExistingIdTest() {
+    void disableEnableUserDisabledTest() {
 
         // Given
         Long userIdToSearch = 4L;
@@ -60,6 +60,28 @@ class AdminServiceImpTest {
         assertEquals(4L, optionalUser.get().getId());
         assertEquals("jorge", optionalUser.get().getUsername());
         assertFalse(optionalUser.get().isEnabled());
+        
+        verify(repository).findById(argThat(new CustomCondition(UserData.idsValid, true)));
+        verify(repository).save(any(User.class));
+    }
+
+    // To test the 'disableEnableUser' method when the user was enabled
+    @Test
+    void disableEnableUserEnabledTest() {
+
+        // Given
+        Long userIdToSearch = 6L;
+        when(repository.findById(anyLong())).thenReturn(Optional.of(UserData.createUser006()));
+        when(repository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // when
+        Optional<User> optionalUser = service.disableEnableUser(userIdToSearch);
+
+        // then
+        assertNotNull(optionalUser.get());
+        assertEquals(6L, optionalUser.get().getId());
+        assertEquals("pancha", optionalUser.get().getUsername());
+        assertTrue(optionalUser.get().isEnabled());
         
         verify(repository).findById(argThat(new CustomCondition(UserData.idsValid, true)));
         verify(repository).save(any(User.class));

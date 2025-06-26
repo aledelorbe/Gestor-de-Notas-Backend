@@ -11,6 +11,7 @@ import com.alejandro.gestordenotas.dto.AdminDto;
 import com.alejandro.gestordenotas.entities.User;
 import com.alejandro.gestordenotas.repositories.UserRepository;
 
+
 @Service
 public class AdminServiceImp implements AdminService {
 
