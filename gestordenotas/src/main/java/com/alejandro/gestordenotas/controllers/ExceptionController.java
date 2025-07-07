@@ -19,14 +19,14 @@ public class ExceptionController {
 
         // To know which entity fires the 'DataIntegrityViolationException'
         String errorMessage = "";
-        if (e.getMessage().contains("user.UK_user")) {
+        if (e.getMessage().contains("user.UK_user") || e.getMessage().contains("PUBLIC.TBL_USER")) {
             // To know if this exception is fired by an update or create action.
             if (e.getMessage().contains("insert")) {
                 errorMessage = "Error! El usuario que se desea registrar ya se encuentra en la base de datos.";
             } else {
                 errorMessage = "Error! Este nombre de usuario al cual se desea actualizar ya lo posee otro usuario.";
             }
-        } 
+        }
 
         ErrorMessage error = new ErrorMessage();
         error.setDateTime(LocalDateTime.now());

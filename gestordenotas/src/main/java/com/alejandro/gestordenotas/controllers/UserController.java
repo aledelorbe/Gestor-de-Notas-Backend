@@ -23,6 +23,7 @@ import com.alejandro.gestordenotas.utils.UtilValidation;
 
 import jakarta.validation.Valid;
 
+
 @RestController // To create a api rest.
 @RequestMapping("/api/users") // To create a base path.
 public class UserController {

@@ -11,36 +11,37 @@ INSERT INTO role (id_role, name) VALUES
 (3, 'ROLE_SUPER_ADMIN');
 
 -- Insert into user
+-- Insert into tbl_user (ids incrementados en +9)
 INSERT INTO tbl_user (id_user, username, password, admin, enabled) VALUES 
-(1, 'alejandro', 'ale123', true, true),
-(2, 'fernando', 'fer123', true, true),
-(3, 'celia', 'celia123', true, true),
-(4, 'jorge', 'jorge123', false, true),
-(5, 'rayas', 'rayas123', false, true),
-(6, 'pancha', 'pancha123', false, false);
+(10, 'alejandro', 'ale123', true, true),
+(11, 'fernando', 'fer123', true, true),
+(12, 'celia', 'celia123', true, true),
+(13, 'jorge', 'jorge123', false, true),
+(14, 'rayas', '$2a$10$BDgkY07YMxPbXbnM3.Vl2ehN4Rz9ZpZ.n.zVtcoDLHLZRxAK3HNwa', false, true),
+(15, 'pancha', 'pancha123', false, false);
 
--- Insert into note
+-- Insert into note (referencias de id_user actualizadas en +9)
 INSERT INTO note (id_note, content, created_at, updated_at, id_user) VALUES 
-(1, 'This is the note No. 1', NULL, NULL, 1),
-(2, 'This is the note No. 2', NULL, NULL, 2),
-(3, 'This is the note No. 3', NULL, NULL, 2),
-(4, 'This is the note No. 4', NULL, NULL, 2),
-(5, 'This is the note No. 5', NULL, NULL, 3),
-(6, 'This is the note No. 6', NULL, NULL, 3),
-(7, 'This is the note No. 7', NULL, NULL, 4),
-(8, 'This is the note No. 8', NULL, NULL, 4),
-(9, 'This is the note No. 9', NULL, NULL, 6),
-(10, 'This is the note No. 10', NULL, NULL, 6);
+(1, 'This is the note No. 1', NULL, NULL, 10),
+(2, 'This is the note No. 2', NULL, NULL, 11),
+(3, 'This is the note No. 3', NULL, NULL, 11),
+(4, 'This is the note No. 4', NULL, NULL, 11),
+(5, 'This is the note No. 5', NULL, NULL, 12),
+(6, 'This is the note No. 6', NULL, NULL, 12),
+(7, 'This is the note No. 7', NULL, NULL, 13),
+(8, 'This is the note No. 8', NULL, NULL, 13),
+(9, 'This is the note No. 9', NULL, NULL, 15),
+(10, 'This is the note No. 10', NULL, NULL, 15);
 
--- Insert into users_roles
+-- Insert into users_roles (id_user actualizados en +9)
 INSERT INTO users_roles (id_user, id_role) VALUES 
-(1, 1),
-(1, 2),
-(1, 3),
-(2, 1),
-(2, 2),
-(3, 1),
-(3, 2),
-(4, 1),
-(5, 1),
-(6, 1);
+(10, 1),
+(10, 2),
+(10, 3),
+(11, 1),
+(11, 2),
+(12, 1),
+(12, 2),
+(13, 1),
+(14, 1),
+(15, 1);

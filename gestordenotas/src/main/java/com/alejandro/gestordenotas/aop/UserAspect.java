@@ -15,26 +15,34 @@ public class UserAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(UserAspect.class);
 
-    // To create advice that intercepts the save method of the user service file
-    @Before("execution(public com.alejandro.gestordenotas.entities.User com.alejandro.gestordenotas.services.UserService.save(com.alejandro.gestordenotas.entities.User))")
+    // To create advice that intercepts the 'save' method of the user service file
+    @Before("execution(* com.alejandro.gestordenotas.services.UserServiceImp.save(..))")
     public void trimBeforeSave(JoinPoint joinPoint) {
 
-        logger.info("Aspecto ejecutado antes del método save() ------------------------");
+        logger.info("Aspect executing before the save method () ------------------------");
 
-        Object[] args = joinPoint.getArgs(); // Obtiene el argumento del método interceptado
-        User userBefore = (User) args[0]; // Cast del argumento al tipo User
+        Object[] args = joinPoint.getArgs(); // Get the argument of the method to be intercepted
+        User userBefore = (User) args[0]; // Cast the argument to type User
 
-        userBefore.setUsername(userBefore.getUsername().trim());
+        this.cleanSpaces(userBefore);
     }
 
-    @Before("execution(* com.alejandro.gestordenotas.services.UserService.update(..))")
+    // To create advice that intercepts the 'update' method for the user entity
+    @Before("execution(* com.alejandro.gestordenotas.services.UserServiceImp.update(..))")
     public void trimBeforeUpdate(JoinPoint joinPoint) {
 
-        logger.info("Aspecto ejecutado antes del método update() ------------------------");
+        logger.info("Aspect executing before the update method () ------------------------");
 
-        Object[] args = joinPoint.getArgs(); // Obtiene el argumento del método interceptado
-        User userBefore = (User) args[1]; // Cast del argumento al tipo User
+        Object[] args = joinPoint.getArgs(); // Get the argument of the method to be intercepted
+        User userBefore = (User) args[1]; // Cast the argument to type User
+
+        this.cleanSpaces(userBefore);
+    }
+
+    // To remove the blanks in this object
+    private void cleanSpaces(User userBefore) {
 
         userBefore.setUsername(userBefore.getUsername().trim());
+
     }
 }

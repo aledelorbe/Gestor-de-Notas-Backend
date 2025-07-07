@@ -5,7 +5,7 @@ use note_manager;
 
 -- User entity
 select *
-from user;
+from tbl_user;
 
 -- Note entity
 select *
@@ -56,5 +56,6 @@ from user
 where id_user in (select id_user
 						from users_roles
 						where id_role = 2 or id_role = 3);
+
 
 

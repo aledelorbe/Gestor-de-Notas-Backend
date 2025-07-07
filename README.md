@@ -119,7 +119,6 @@ Rutas organizadas para interactuar con el backend. Operaciones soportadas:
 
 ## Futuras mejoras
 
-Actualizar todo lo relacionado con AOP.  
 Dockerizar.  
 Despliegue en AWS.
 
@@ -250,7 +249,6 @@ Organized routes to interact with the backend. Supported operations:
 
 ## Future Improvements
 
-Update everything related to AOP.  
 Dockerize the application.  
 Deploy on AWS.
 
