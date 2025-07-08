@@ -28,7 +28,7 @@ import com.alejandro.gestordenotas.dto.UserDto;
 @Sql(scripts = "/insert.sql") 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class NoteIntegrationTest {
+class NoteIntegrationTest {
     
     // To inject the component of testRestTemplate
     @Autowired

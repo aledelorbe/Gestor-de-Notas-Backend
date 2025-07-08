@@ -39,6 +39,7 @@ public class AdminController {
     @Autowired
     private UtilValidation utilValidation;
     
+    
     // Endpoint's for the admin role ----------------------
     
     // To create an endpoint that allows invoking the 'getAllUsersWithUserRole' method.

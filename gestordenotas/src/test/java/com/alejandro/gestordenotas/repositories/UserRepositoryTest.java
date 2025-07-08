@@ -26,6 +26,7 @@ class UserRepositoryTest {
     @Autowired
     UserRepository repository;
 
+    
     // To test the 'getAllUsersWithUserRole' method 
     @Test
     void getAllUsersWithUserRoleTest () {
