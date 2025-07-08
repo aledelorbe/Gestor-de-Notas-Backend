@@ -16,13 +16,4 @@ public class TestConfig {
         return new UtilValidation();
     }
 
-    // // To disable security on tests
-    // @Bean
-    // SecurityFilterChain testSecurityFilterChain(HttpSecurity http) throws Exception {
-    //     http
-    //         .csrf(csrf -> csrf.disable())
-    //         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-    //     return http.build();
-    // }
-
 }

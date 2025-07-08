@@ -37,11 +37,11 @@ class UserRepositoryTest {
         assertFalse(users.isEmpty());
         assertEquals(3, users.size());
 
-        assertEquals(4L, users.get(0).getId());
+        assertEquals(13L, users.get(0).getId());
         assertEquals("jorge", users.get(0).getUsername());
         assertTrue(users.get(0).isEnabled());
 
-        assertEquals(5L, users.get(1).getId());
+        assertEquals(14L, users.get(1).getId());
         assertEquals("rayas", users.get(1).getUsername());
         assertTrue(users.get(1).isEnabled());
     }
@@ -51,7 +51,7 @@ class UserRepositoryTest {
     void getUserWithUserRoleTest () {
 
         // Given
-        Long userIdToSearch = 6L;
+        Long userIdToSearch = 15L;
 
         // When
         Optional<AdminDto> optionalUser = repository.getUserWithUserRole(userIdToSearch);
@@ -60,7 +60,7 @@ class UserRepositoryTest {
         // Then
         assertTrue(optionalUser.isPresent());
 
-        assertEquals(6L, user.getId());
+        assertEquals(15L, user.getId());
         assertEquals("pancha", user.getUsername());
         assertFalse(user.isEnabled());
     }
@@ -76,9 +76,9 @@ class UserRepositoryTest {
         assertFalse(ids.isEmpty());
         assertEquals(3, ids.size());
 
-        assertEquals(1L, ids.get(0));
-        assertEquals(2L, ids.get(1));
-        assertEquals(3L, ids.get(2));
+        assertEquals(10L, ids.get(0));
+        assertEquals(11L, ids.get(1));
+        assertEquals(12L, ids.get(2));
     }
 
     // To test the 'getAllUsersWithUserAndAdminRole' method 
@@ -92,18 +92,18 @@ class UserRepositoryTest {
         assertFalse(users.isEmpty());
         assertEquals(5, users.size());
 
-        assertEquals(2L, users.get(0).getId());
-        assertEquals(3L, users.get(1).getId());
-        assertEquals(4L, users.get(2).getId());
-        assertEquals(5L, users.get(3).getId());
-        assertEquals(6L, users.get(4).getId());
+        assertEquals(11L, users.get(0).getId());
+        assertEquals(12L, users.get(1).getId());
+        assertEquals(13L, users.get(2).getId());
+        assertEquals(14L, users.get(3).getId());
+        assertEquals(15L, users.get(4).getId());
 
-        assertEquals(4L, users.get(2).getId());
+        assertEquals(13L, users.get(2).getId());
         assertEquals("jorge", users.get(2).getUsername());
         assertTrue(users.get(2).isEnabled());
         assertFalse(users.get(2).isAdmin());
 
-        assertEquals(5L, users.get(3).getId());
+        assertEquals(14L, users.get(3).getId());
         assertEquals("rayas", users.get(3).getUsername());
         assertTrue(users.get(3).isEnabled());
         assertFalse(users.get(3).isAdmin());
@@ -114,7 +114,7 @@ class UserRepositoryTest {
     void getUserWithUserAndAdminRoleTest () {
 
         // Given
-        Long userIdToSearch = 6L;
+        Long userIdToSearch = 15L;
 
         // When
         Optional<SuperAdminDto> optionalUser = repository.getUserWithUserAndAdminRole(userIdToSearch);
@@ -123,7 +123,7 @@ class UserRepositoryTest {
         // Then
         assertTrue(optionalUser.isPresent());
 
-        assertEquals(6L, user.getId());
+        assertEquals(15L, user.getId());
         assertEquals("pancha", user.getUsername());
         assertFalse(user.isEnabled());
         assertFalse(user.isAdmin());
@@ -137,7 +137,7 @@ class UserRepositoryTest {
         Long superAdminId = repository.getIdOfSuperAdmin();
 
         // Then
-        assertEquals(1L, superAdminId);
+        assertEquals(10L, superAdminId);
     }
     
 }

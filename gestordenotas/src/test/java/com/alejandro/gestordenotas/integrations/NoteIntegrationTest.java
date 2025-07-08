@@ -68,7 +68,7 @@ public class NoteIntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertFalse(notes.isEmpty());
         assertEquals(3, notes.size());
-        assertEquals(2, notes.get(0).getId());
+        assertEquals(21, notes.get(0).getId());
         assertEquals("This is the note No. 2", notes.get(0).getContent());
     }
 
