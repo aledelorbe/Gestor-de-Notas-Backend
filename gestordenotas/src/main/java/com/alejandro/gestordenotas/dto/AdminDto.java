@@ -14,8 +14,4 @@ public class AdminDto extends UserDto {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
 }
